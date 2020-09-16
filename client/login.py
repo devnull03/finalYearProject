@@ -3,7 +3,7 @@ import sys, os
 curPath = os.getcwd()
 sys.path.append(curPath)
 from modules.pygame_textinput import TextInput
-from client.echo_client import sendCred
+from client.mainClient import sendCred
 
 pygame.init()
 mainScreen = pygame.display.set_mode((550,300))
