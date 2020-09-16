@@ -1,9 +1,6 @@
 import pygame
-import sys, os
-curPath = os.getcwd()
-sys.path.append(curPath)
 from modules.pygame_textinput import TextInput
-from client.mainClient import sendCred
+from mainClient import sendCred
 
 pygame.init()
 mainScreen = pygame.display.set_mode((550,300))
@@ -11,19 +8,20 @@ clock = pygame.time.Clock()
 
 userName,userBool = TextInput(font_size=25,max_string_length=16),True
 password,passBool = TextInput(font_size=25,max_string_length=16),False
-red,green = (255,0,0),(0,255,0)
+red,green = (170,0,0),(0,170,0)
 
 theFont = pygame.font.SysFont('Times New Roman',20)
 theOtherFont = pygame.font.SysFont('Times New Roman',17)
 
 eeee = False
+cmd=''
 userColor,passColor = (100,100,100),(100,100,100)
 
 def userName_Box(events) :
     mouse = pygame.mouse.get_pos()
     global passBool
     global userBool
-    pos = (170,110)
+    pos = (190,110)
 
     for event in events :
         if event.type == pygame.MOUSEBUTTONDOWN :
@@ -55,7 +53,7 @@ def password_Box(events) :
     mouse = pygame.mouse.get_pos()
     global passBool
     global userBool
-    pos = (170,180)
+    pos = (190,180)
 
     for event in events :
         if event.type == pygame.MOUSEBUTTONDOWN :
@@ -85,7 +83,7 @@ def password_Box(events) :
 
 def login_Box(events) :
     mouse = pygame.mouse.get_pos()
-    pos = (200,220)
+    pos = (220,220)
 
     for event in events :
         if event.type == pygame.MOUSEBUTTONDOWN :
@@ -101,21 +99,27 @@ def check():
     global eeee
     global userColor
     global passColor
-
-    b = sendCred(userName.get_text(),password.get_text()).split("<SEP>")
-    if b[0]=="True" :
-        userColor = green
-        if b[1]=="True" :
-            passColor = green
-            eeee = True
-        else : passColor = red
-    else : 
-        userColor = red
-        passColor = red
+    global cmd
+    
+    try :
+        b = sendCred(userName.get_text(),password.get_text()).split("<SEP>")
+        cmd = ""
+        if b[0]=="True" :
+            userColor = green
+            if b[1]=="True" :
+                passColor = green
+                eeee = True
+            else : passColor = red
+        else : 
+            userColor = red
+            passColor = red
+    except :
+        print(c:="Server not found, try again")
+        cmd = c
 
 
 while True:
-    mainScreen.fill((225, 225, 225))
+    mainScreen.fill((170, 170, 170))
     events = pygame.event.get()
     for event in events:
         if event.type == pygame.QUIT:
@@ -128,6 +132,9 @@ while True:
     password_Box(events)
     userName_Box(events)
     login_Box(events)
+
+    text = theOtherFont.render(cmd,True,(170,0,0))
+    mainScreen.blit(text,(2,280))
 
     pygame.display.update()
     clock.tick(30)

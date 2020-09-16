@@ -1,10 +1,9 @@
-test.txt
 .vscode/settings.json
 testing.py
-client/__pycache__/echo_client.cpython-38.pyc
 server/__pycache__/sqliteServer.cpython-38.pyc
 client/__pycache__/login.cpython-38.pyc
 server/modules/__pycache__/pygame_textinput.cpython-38.pyc
 server/modules/__pycache__/__init__.cpython-38.pyc
 client/modules/__pycache__/pygame_textinput.cpython-38.pyc
 client/modules/__pycache__/__init__.cpython-38.pyc
+client/__pycache__/mainClient.cpython-38.pyc
