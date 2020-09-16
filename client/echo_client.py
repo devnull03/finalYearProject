@@ -10,4 +10,4 @@ def sendCred(userName,password) :
         data = s.recv(1024)
 
     print('Received', repr(data))
-    return data
+    return data.decode('utf-8')
