@@ -7,3 +7,4 @@ server/modules/__pycache__/__init__.cpython-38.pyc
 client/modules/__pycache__/pygame_textinput.cpython-38.pyc
 client/modules/__pycache__/__init__.cpython-38.pyc
 client/__pycache__/mainClient.cpython-38.pyc
+client/assets/mainPageBack.xcf
