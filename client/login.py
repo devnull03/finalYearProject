@@ -3,6 +3,7 @@ from modules.pygame_textinput import TextInput
 from mainClient import sendCred
 
 pygame.init()
+pygame.display.set_caption("Clash Login")
 mainScreen = pygame.display.set_mode((550,300))
 clock = pygame.time.Clock()
 
