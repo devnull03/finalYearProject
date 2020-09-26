@@ -1,7 +1,13 @@
+import time
+from login import startLogin
 
+a = False
 try :
-    from client import login
-except TypeError :
+    a = startLogin()
+except  :
     print("nope")
-except BaseException :
-    print("yeee")
+else :
+    time.sleep(2)
+    if a :
+        from mainPage import startMainPage
+        startMainPage()

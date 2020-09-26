@@ -1,6 +1,8 @@
+import time, os
 import pygame
 from modules.pygame_textinput import TextInput
 from mainClient import sendCred
+from client import send
 
 pygame.init()
 pygame.display.set_caption("Clash Login")
@@ -103,13 +105,17 @@ def check():
     global cmd
     
     try :
-        b = sendCred(userName.get_text(),password.get_text()).split("<SEP>")
+        b = send(f'{userName.get_text()}<SEP>{password.get_text()}')  #sendCred((user:=userName.get_text()),password.get_text()).split("<SEP>")
         cmd = ""
         if b[0]=="True" :
             userColor = green
             if b[1]=="True" :
                 passColor = green
                 eeee = True
+                if "temp" not in os.listdir("client") :
+                    os.mkdir('client/temp')
+                with open("client/temp/nothingToSeeHere.txt","w") as tempFile :
+                    tempFile.write(user)
             else : passColor = red
         else : 
             userColor = red
@@ -118,24 +124,27 @@ def check():
         print(c:="Server not found, try again")
         cmd = c
 
+def startLogin() :
+    while True:
+        mainScreen.fill((170, 170, 170))
+        events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.QUIT:
+                time.sleep(1)
+                return False
+                exit()
+            if eeee : 
+                return True
+                exit()
 
-while True:
-    mainScreen.fill((170, 170, 170))
-    events = pygame.event.get()
-    for event in events:
-        if event.type == pygame.QUIT:
-            raise TypeError("False")
-            exit()
-        if eeee : 
-            raise BaseException("True")
-            exit()
+        password_Box(events)
+        userName_Box(events)
+        login_Box(events)
 
-    password_Box(events)
-    userName_Box(events)
-    login_Box(events)
+        text = theOtherFont.render(cmd,True,(170,0,0))
+        mainScreen.blit(text,(2,280))
 
-    text = theOtherFont.render(cmd,True,(170,0,0))
-    mainScreen.blit(text,(2,280))
+        pygame.display.update()
+        clock.tick(30)
 
-    pygame.display.update()
-    clock.tick(30)
+startLogin()
