@@ -1,12 +1,15 @@
 import pygame, time, os
-#from modules.pygame_textinput import TextInput
+# from modules.pygame_textinput import TextInput
 '''
 with open("client/temp/nothingToSeeHere.txt") as tempFile :
     userName = tempFile.read()
 os.remove("client/temp/nothingToSeeHere.txt")
 '''
 
+pygame.init()
 
+pygame.display.set_caption("Clash of Code")
+pygame.display.set_icon(pygame.image.load('client/assets/logo.png'))
 screenSize = (460,800)
 mainScreen = pygame.display.set_mode(screenSize)
 clock = pygame.time.Clock()
@@ -15,12 +18,15 @@ timerBool = False
 
 Font = pygame.font.SysFont('Times New Roman',30)
 
-#--------------Timer Function---------------#
-t=time.time()
+# --------------Timer Function---------------
+
+t = time.time()
 Time = 15*60
 secs = 60
-mins = Time//60 -1    
-def timer(location) :
+mins = Time//60 - 1
+
+
+def timer(location):
     global secs
     global mins
     minus = time.time()-t
@@ -39,7 +45,7 @@ def button(events):
     global timerBool
     global t
 
-    pos = (200,24)
+    pos = (20,240)
     size = (60,25)
     mouse = pygame.mouse.get_pos()
 
@@ -52,8 +58,8 @@ def button(events):
                 timerBool = True
 #--------------------------------------------#
 
-def startMainPage() :
-    pygame.init()
+def startMainPage(userName) :
+    
     pygame.display.set_caption("Clash of Code")
     back = pygame.image.load(r'client\assets\mainPageBack.png')
 
@@ -77,3 +83,4 @@ def startMainPage() :
         pygame.display.update()
         clock.tick(30)
 
+startMainPage('devNull')
