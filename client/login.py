@@ -5,6 +5,7 @@ from modules.pygame_textinput import TextInput
 class Login:
 
     def __init__(self):
+        pygame.init()
         pygame.display.set_caption("Login")
         pygame.display.set_icon(pygame.image.load('assets/logo.png'))
         self.mainScreen = pygame.display.set_mode((550, 300))
@@ -40,7 +41,6 @@ class Login:
         if self.userBool:
             a = self.userName.update(events)
             if a:
-                self.check()
                 return True
 
         text = self.theFont.render("Username :", True, (0, 0, 0))
@@ -72,7 +72,6 @@ class Login:
         if self.passBool:
             a = self.password.update(events)
             if a:
-                self.check()
                 return True
 
         text = self.theFont.render("Password :", True, (0, 0, 0))
@@ -92,16 +91,12 @@ class Login:
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if pos[0] <= mouse[0] <= pos[0] + 200 and pos[1] <= mouse[1] <= pos[1] + 30:
-                    self.check()
                     return True
 
         pygame.draw.rect(self.mainScreen, (20, 20, 20), pygame.Rect(pos, (140, 25)))
 
         text = self.theOtherFont.render("LogIN", True, (200, 200, 200))
         self.mainScreen.blit(text, (pos[0] + 44, pos[1] + 1))
-
-    def check(self):
-        self.entered = True
 
     def testing_start(self):
         while True:
@@ -115,10 +110,9 @@ class Login:
                     pygame.quit()
                     return False
 
-                if self.eeee:
+                if self.done:
                     # send("!DISCONNECT")
                     # return userName.get_text()
-                    self.done = (True, True)
                     pygame.quit()
                     return True
 
@@ -132,89 +126,6 @@ class Login:
             pygame.display.update()
             self.clock.tick(30)
 
-"""
-def check():
-    global eeee
-    global userColor
-    global passColor
-    global cmd
-    global entered
-    entered = True
-
-    toSend = f'{userName.get_text()}<SEP>{password.get_text()}'
-
-    try:
-
-        b = send(toSend)  # sendCred((user:=userName.get_text()),password.get_text()).split("<SEP>")
-        cmd = ""
-        if b[0] == "True":
-            userColor = green
-            if b[1] == "True":
-                passColor = green
-                eeee = True
-                if "temp" not in os.listdir("client"):
-                    os.mkdir('client/temp')
-                with open("client/temp/nothingToSeeHere.txt", "w") as tempFile:
-                    tempFile.write(userName.get_text())
-            else:
-                passColor = red
-        else:
-            userColor = red
-            passColor = red
-    except:
-        print(c := "Server not found, try again")
-        cmd = c
-"""
-'''
-class Login:
-    def __init__(self):
-        # self.entered = entered
-        # self.run += 1
-        pass
-
-    @staticmethod
-    def run():
-        startLogin()
-
-    @property
-    def running(self):
-        global done
-        return not any(done)
-
-    @property
-    def get_input(self):
-        toSend = f'{userName.get_text()}<SEP>{password.get_text()}'
-        return toSend
-
-    def send_result(self, result_tuple, _cmd=""):
-        global userColor
-        global passColor
-        global cmd
-        global eeee
-        if type(result_tuple) is list or type(result_tuple) is tuple:
-            if result_tuple[0] == "True":
-                userColor = green
-                if result_tuple[1] == "True":
-                    passColor = green
-                    eeee = True
-                else:
-                    passColor = red
-            else:
-                userColor = red
-                passColor = red
-
-    @property
-    def got_input(self):
-        global entered
-        if entered is True:
-            entered = False
-            return True
-
-    @property
-    def successful(self):
-        return done[1]
-
-'''
 
 if __name__ == "__main__":
     pygame.init()

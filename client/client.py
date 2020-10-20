@@ -2,6 +2,7 @@ import socket
 import pygame
 import time
 from login import Login
+from mainPage import MainPage
 
 HEADER = 64
 PORT = 5050
@@ -33,7 +34,6 @@ def send(msg):
     return msg
 
 
-pygame.init()
 loginPage = Login()
 colors = (loginPage.red, loginPage.green)
 
@@ -74,4 +74,12 @@ print(login_screen())
 print(
     '------------test------------'
 )
+d = {
+    "mode": "Shortest",
+    "time": 15
+}
+
+m = MainPage(**d)
+m.test_start()
+
 send(DISCONNECT_MESSAGE)

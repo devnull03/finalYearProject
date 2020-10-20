@@ -12,3 +12,4 @@ client/__pycache__/client.cpython-38.pyc
 client/__pycache__/mainPage.cpython-38.pyc
 client/temp/nothingToSeeHere.txt
 /.idea/
+server/__pycache__/database.cpython-38.pyc
