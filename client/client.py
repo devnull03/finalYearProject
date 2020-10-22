@@ -3,6 +3,8 @@ import socket
 import pygame
 import time
 import os
+if '\\client' not in (cwd:=os.getcwd()):
+    os.chdir(f"{cwd}\\client")
 from login import Login
 from mainPage import MainPage
 
@@ -11,7 +13,7 @@ PORT = 5050
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
 SEPARATOR = '<SEP>'
-SERVER = "127.0.0.1" # "192.168.29.105"
+SERVER = "192.168.29.105"
 ADDR = (SERVER, PORT)
 LOGIN_MESSAGE = 'sendInfo'
 
@@ -36,6 +38,10 @@ def send(msg):
     print(msg)
     return msg
 
+def send_file(path, file_name):
+    with open(path, 'r') as file:
+        send(f'file{SEPARATOR}{file_name}{SEPARATOR}{file.read()}')
+    
 
 loginPage = Login()
 colors = (loginPage.red, loginPage.green)
@@ -46,37 +52,29 @@ def login_screen():
         loginPage.mainScreen.fill((170, 170, 170))
         events = pygame.event.get()
         for event in events:
-
             if event.type == pygame.QUIT:
                 send(DISCONNECT_MESSAGE)
                 pygame.quit()
                 return False
-
             if loginPage.done:
                 pygame.quit()
                 time.sleep(1)
-                return True
-
+                return True, loginPage.userName.get_text()
         if loginPage.password_Box(events) or loginPage.userName_Box(events) or loginPage.login_Box(events):
             returned = send(
                 SEPARATOR.join(('login', loginPage.userName.get_text(), loginPage.password.get_text()))
             ).split(SEPARATOR)
-
             loginPage.userColor, loginPage.passColor = colors[returned[0] == 'True'], colors[returned[1] == 'True']
             if returned.count('True') == 2:
                 loginPage.done = True
-
         text = loginPage.theOtherFont.render(loginPage.cmd, True, (170, 0, 0))
         loginPage.mainScreen.blit(text, (2, 280))
-
         pygame.display.update()
         loginPage.clock.tick(30)
 
+sucessful, username = login_screen()
 
-sucessful = login_screen()
-print(
-    '------------test------------'
-)
+print('------------test------------')
 
 if not sucessful:
     exit()
@@ -87,26 +85,36 @@ d = {
 }
 
 info = json.loads(send(LOGIN_MESSAGE))["challenge_info"]
-
 user = os.path.abspath('client.py').split('\\')[2]
 file_path = f"C:\\Users\\{user}"
-
 example_file = send('example_file').split(SEPARATOR)
 if "Desktop" not in os.listdir(file_path):
     file_path = f"{file_path}\\Onedrive\\Desktop\\{example_file[0]}"
 else:
     file_path = f"{file_path}\\Desktop\\{example_file[0]}"
-
 with open(file_path, 'w') as file:
     file.write(example_file[1])
 
-# file_name = 'testFile.txt'
-# with open(file_name,'r') as file:
-#     send(
-#         f'file<SEP>{file_name}<SEP>{file.read()}'
-#     )
+main_page = MainPage(**info, default_path=file_path)
 
-m = MainPage(**info)
-m.test_start()
+def main_screen():
+    while 1:
+        events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return False
+
+        main_page.mainScreen.blit(main_page.back, (0, 0))
+        main_page.display_info()
+        main_page.dev_button(events)
+        main_page.timer()
+        if a:=main_page.finish_gui(events):
+            send_file(a, f'{username}.py')
+
+        pygame.display.update()
+        main_page.clock.tick(30)
+
+main_screen()
 
 send(DISCONNECT_MESSAGE)
