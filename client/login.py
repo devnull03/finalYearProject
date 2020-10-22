@@ -1,4 +1,5 @@
 import pygame
+import os
 from modules.pygame_textinput import TextInput
 
 
@@ -128,7 +129,8 @@ class Login:
 
 
 if __name__ == "__main__":
-    pygame.init()
+    os.chdir(f"{os.getcwd()}\\client")
+    
     test = Login().testing_start()
 
     print(
