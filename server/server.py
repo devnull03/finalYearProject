@@ -62,7 +62,7 @@ class Server:
                     with open(sys.argv[1]) as file:
                         conn.send(file.read().encode(FORMAT))
                 elif info[0] == 'file':
-                    with open(info[1],'w') as file:
+                    with open(f"solutions\\{info[1]}",'w') as file:
                         file.write(info[2])
                     conn.send('Done'.encode(FORMAT))
                 elif info[0] == 'example_file':
