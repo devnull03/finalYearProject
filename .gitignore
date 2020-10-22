@@ -13,3 +13,10 @@ client/__pycache__/mainPage.cpython-38.pyc
 client/temp/nothingToSeeHere.txt
 /.idea/
 server/__pycache__/database.cpython-38.pyc
+client/modules/__pycache__/text_wrapper.cpython-38.pyc
+client/testFile.txt
+server/testFile.txt
+server/solutions/__pycache__/b.cpython-38.pyc
+server/solutions/__pycache__/a.cpython-38.pyc
+server/solutions/b.py
+server/solutions/a.py

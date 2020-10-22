@@ -1,6 +1,8 @@
+import json
 import socket
 import pygame
 import time
+import os
 from login import Login
 from mainPage import MainPage
 
@@ -9,8 +11,9 @@ PORT = 5050
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
 SEPARATOR = '<SEP>'
-SERVER = "192.168.29.105"
+SERVER = "127.0.0.1" # "192.168.29.105"
 ADDR = (SERVER, PORT)
+LOGIN_MESSAGE = 'sendInfo'
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -70,16 +73,40 @@ def login_screen():
         loginPage.clock.tick(30)
 
 
-print(login_screen())
+sucessful = login_screen()
 print(
     '------------test------------'
 )
+
+if not sucessful:
+    exit()
 d = {
     "mode": "Shortest",
-    "time": 15
+    "time": 15,
+    "task": "Test"*10
 }
 
-m = MainPage(**d)
+info = json.loads(send(LOGIN_MESSAGE))["challenge_info"]
+
+user = os.path.abspath('client.py').split('\\')[2]
+file_path = f"C:\\Users\\{user}"
+
+example_file = send('example_file').split(SEPARATOR)
+if "Desktop" not in os.listdir(file_path):
+    file_path = f"{file_path}\\Onedrive\\Desktop\\{example_file[0]}"
+else:
+    file_path = f"{file_path}\\Desktop\\{example_file[0]}"
+
+with open(file_path, 'w') as file:
+    file.write(example_file[1])
+
+# file_name = 'testFile.txt'
+# with open(file_name,'r') as file:
+#     send(
+#         f'file<SEP>{file_name}<SEP>{file.read()}'
+#     )
+
+m = MainPage(**info)
 m.test_start()
 
 send(DISCONNECT_MESSAGE)

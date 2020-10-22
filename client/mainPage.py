@@ -1,10 +1,15 @@
 import pygame
 import time
+
+from pygame import mouse
 # from modules.pygame_textinput import TextInput
+from modules.text_wrapper import drawText
 
 
 class MainPage:
 
+    mousePos = (0, 0)
+    
     def __init__(self, **kwargs):
         pygame.init()
         pygame.display.set_caption("Clash of Code")
@@ -20,6 +25,7 @@ class MainPage:
 
         self.mode = kwargs["mode"]
         self.task = kwargs["task"]
+        self.examples = kwargs["examples"]
 
         self.timerBool = False
         self.t = time.time()
@@ -33,18 +39,23 @@ class MainPage:
 
     def timer(self):
         location = (33, 20)
-        minus = time.time() - self.t
-        sec = int(self.secs - minus)
-        secc = f"0{sec}" if sec < 10 else sec
-        Timer = f"{self.mins}:{secc}"
-        if sec < 0:
-            self.secs += 60
-            self.mins -= 1
+        if self.timerBool:
+            minus = time.time() - self.t
+            sec = int(self.secs - minus)
+            secc = f"0{sec}" if sec < 10 else sec
+            Timer = f"{self.mins}:{secc}"
+            if sec < 0:
+                self.secs += 60
+                self.mins -= 1
+                if self.mins < 0:
+                    self.timerBool = False
+        else:
+            Timer = f"{self.mins + 1}:00"
 
         text = self.Font.render(str(Timer), True, (0, 0, 0))
         self.mainScreen.blit(text, location)
 
-    def button(self, events):
+    def dev_button(self, events):
 
         pos = (20, 240)
         size = (60, 25)
@@ -59,6 +70,19 @@ class MainPage:
                         self.t = time.time()
                     self.timerBool = True
 
+    def finish_button(self, events):
+
+        pos = (200, 640)
+        size = (60, 25)
+        mouse = pygame.mouse.get_pos()
+
+        pygame.draw.rect(self.mainScreen, (20, 20, 20), pygame.Rect(pos, size))
+
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pos[0] <= mouse[0] <= pos[0] + size[0] and pos[1] <= mouse[1] <= pos[1] + size[1]:
+                    return True
+
     def display_info(self):
         black = self.black
 
@@ -66,9 +90,11 @@ class MainPage:
         mode_text = self.Font.render(f"Mode - {self.mode}", True, black)
         self.mainScreen.blit(mode_text, mode_location)
 
-        task_location = (25, 115)
-        task_text = self.small_font.render(self.task, True, black)
-        self.mainScreen.blit(task_text, task_location)
+        drawText(
+            self.mainScreen, self.task, self.black, ((25, 115), (427, 227)), self.small_font
+            )
+
+        
 
     def test_start(self):
 
@@ -79,16 +105,24 @@ class MainPage:
                     pygame.quit()
                     return False
 
+            # pos = pygame.mouse.get_pos()
+            # if pos != self.mousePos:
+            #     print(pos)
+            #     self.mousePos = pos
             # mainScreen.fill((170, 170, 170))
+
             self.mainScreen.blit(self.back, (0, 0))
             self.display_info()
+            self.dev_button(events)
+            self.timer()
 
-            self.button(events)
+            '''
             if self.timerBool:
                 self.timer()
             else:
                 text = self.Font.render(f"{self.mins + 1}:00", True, (0, 0, 0))
                 self.mainScreen.blit(text, (33, 20))
+            '''
 
             pygame.display.update()
             self.clock.tick(30)
@@ -98,8 +132,8 @@ if __name__ == "__main__":
 
     d = {
         "mode": "Shortest",
-        "time": 15,
-        "task": "wwwwwwwwwwwwwwwwwwwwwwwwwwwww 123456789012345678901234567890"
+        "time": 1,
+        "task": "Test task ........... .............. .........."
     }
-    print(len(d["task"]), len("123456789012345678901234567890"))
+
     MainPage(**d).test_start()
