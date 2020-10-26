@@ -1,8 +1,9 @@
+import os
 import sys
-import json
 import socket
 import threading
 from database import checkUser
+import settings
 
 
 class Server:
@@ -14,8 +15,12 @@ class Server:
 
     def __init__(self, **kwargs):
         self.PORT = kwargs["PORT"]
-        self.files = kwargs["file"]["server_files"]
-        self.challenge = kwargs["file"]["challenge_info"]
+        self.challenge = {
+            "mode": settings.MODE,
+            "time": settings.TIME,
+            "task": settings.TASK,
+            "examples": settings.EXAMPLES
+        }
         self.SERVER = socket.gethostbyname(socket.gethostname())
         self.ADDR = (self.SERVER, self.PORT)
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -51,6 +56,9 @@ class Server:
                 msg = conn.recv(msg_length).decode(FORMAT)
                 info = msg.split(SEPARATOR)
 
+                if info == 'ping':
+                    conn.send('pong'.encode(FORMAT))
+
                 if info[0] == 'login':
                     user = checkUser(SEPARATOR.join((info[1], info[2])))
                     if user == f'True{SEPARATOR}True':
@@ -58,10 +66,10 @@ class Server:
                     conn.send(user.encode(FORMAT))
                     print(info)
                 elif info[0] == self.LOGIN_MESSAGE:
-                    # conn.send(json.dumps(self.challenge).encode(FORMAT))
-                    with open(sys.argv[1]) as file:
-                        conn.send(file.read().encode(FORMAT))
+                    conn.send(str(self.challenge).encode(FORMAT))
                 elif info[0] == 'file':
+                    # if 'solutions' not in os.listdir():
+                    #     os.mkdir('solutions')
                     with open(f"solutions\\{info[1]}",'w') as file:
                         file.write(info[2])
                     conn.send('Done'.encode(FORMAT))
@@ -87,19 +95,7 @@ class Server:
             print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
 
 
-if len(sys.argv) > 1:
-    try:
-        with open(sys.argv[1], 'r') as json_file:
-            json_file = json.load(json_file)
-    except FileNotFoundError:
-        json_file = None
-        print('File not found')
-        sys.exit()
-else:
-    json_file = None
-    print('No file specified')
-    sys.exit()
 
 print("[STARTING] server is starting...")
-s = Server(PORT=5050, file=json_file)
+s = Server(PORT=6969)
 s.start()

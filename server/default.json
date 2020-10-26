@@ -2,9 +2,9 @@
 
     "server_files": {
 
-        "default_file": "C:\\Users\\Dell\\OneDrive\\Desktop\\test\\example.py",
-        "solution_file": "C:\\Users\\Dell\\OneDrive\\Desktop\\test\\check.py",
-        "test_cases": "C:\\Users\\Dell\\OneDrive\\Desktop\\test\\test_cases.py"
+        "default_file": "C:\\Users\\Dell\\OneDrive\\Desktop\\test_files\\example.py",
+        "solution_file": "C:\\Users\\Dell\\OneDrive\\Desktop\\test_files\\check.py",
+        "test_cases": "C:\\Users\\Dell\\OneDrive\\Desktop\\test_files\\test_cases.py"
 
     },
 

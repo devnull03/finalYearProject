@@ -22,3 +22,4 @@ server/solutions/b.py
 server/solutions/a.py
 client/assets/logo.xcf
 server/solutions/devNull.py
+server/solutions/__pycache__/devNull.cpython-38.pyc

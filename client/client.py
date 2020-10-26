@@ -9,7 +9,7 @@ from login import Login
 from mainPage import MainPage
 
 HEADER = 64
-PORT = 5050
+PORT = 6969
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
 SEPARATOR = '<SEP>'
@@ -103,6 +103,7 @@ def main_screen():
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
+                send(DISCONNECT_MESSAGE)
                 return False
 
         main_page.mainScreen.blit(main_page.back, (0, 0))
