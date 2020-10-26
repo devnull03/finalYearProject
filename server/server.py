@@ -3,6 +3,7 @@ import socket
 import threading
 from database import checkUser
 import settings
+from impoter import checker
 
 
 class Server:

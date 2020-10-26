@@ -24,3 +24,4 @@ client/assets/logo.xcf
 server/solutions/devNull.py
 server/solutions/__pycache__/devNull.cpython-38.pyc
 server/__pycache__/settings.cpython-38.pyc
+server/solutions/__pycache__/admin.cpython-38.pyc

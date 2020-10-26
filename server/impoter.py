@@ -46,5 +46,5 @@ if __name__ == "__main__":
 	print(
 		c.check_files()
 	)
-	c.clean_folder()
+	# c.clean_folder()
 	
