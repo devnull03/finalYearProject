@@ -48,8 +48,8 @@ def newUser(connection, userName, password):
 
 
 if __name__ == "__main__":
-    # import os
-    print(
-        checkUser('devNull<SEP>123456')
-    )
-    # newUser('users.sqlite', 'devNull', '123456')
+
+    # print(
+    #     checkUser('devNull<SEP>123456')
+    # )
+    newUser('users.sqlite', 'admin', 'admin')

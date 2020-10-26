@@ -1,5 +1,4 @@
-import os
-import sys
+import os, sys, json
 import socket
 import threading
 from database import checkUser
@@ -25,7 +24,8 @@ class Server:
         self.ADDR = (self.SERVER, self.PORT)
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind(self.ADDR)
-        self.login = False
+        # self.login = False
+        self.participants = []
 
 
     def send(self, conn, msg):
@@ -47,6 +47,7 @@ class Server:
         FORMAT = self.FORMAT
         SEPARATOR = self.SEPARATOR
         print(f"[NEW CONNECTION] {addr} connected.")
+        USER = ''
 
         connected = True
         while connected:
@@ -62,26 +63,39 @@ class Server:
                 if info[0] == 'login':
                     user = checkUser(SEPARATOR.join((info[1], info[2])))
                     if user == f'True{SEPARATOR}True':
-                        self.login = True
-                    conn.send(user.encode(FORMAT))
+                        # self.login = True
+                        print(self.participants)
+                        if info[1] not in self.participants:
+                            conn.send(user.encode(FORMAT))
+                            USER = info[1]
+                            self.participants.append(USER)
+                        else:
+                            conn.send(f'No{SEPARATOR}No'.encode(FORMAT))
                     print(info)
+
                 elif info[0] == self.LOGIN_MESSAGE:
-                    conn.send(str(self.challenge).encode(FORMAT))
+                    conn.send(json.dumps(self.challenge).encode(FORMAT))
+
                 elif info[0] == 'file':
-                    # if 'solutions' not in os.listdir():
-                    #     os.mkdir('solutions')
                     with open(f"solutions\\{info[1]}",'w') as file:
                         file.write(info[2])
                     conn.send('Done'.encode(FORMAT))
+
                 elif info[0] == 'example_file':
-                    with open(self.files["default_file"], 'r') as file:
-                        conn.send(
-                            f"challange.py{SEPARATOR}{file.read()}".encode(FORMAT)
-                        )
+                    with open(settings.EXAMPLE_FILE, 'r') as file:
+                        conn.send(f"challange.py{SEPARATOR}{file.read()}".encode(FORMAT))
+
+                else: 
+                    conn.send("None".encode(FORMAT))
 
                 if msg == self.DISCONNECT_MESSAGE:
+                    try:
+                        self.participants.remove(USER)
+                    except:
+                        pass
                     connected = False
-                print(f"[{addr}] {msg}")
+                if msg != 'start?' and info[0] != 'file':
+                    print(f"[{addr}] {msg}")
         conn.close()
 
     def start(self):
@@ -95,7 +109,11 @@ class Server:
             print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
 
 
+if __name__ == "__main__":
+    cwd = os.getcwd()
+    if not cwd.endswith('\\server'):
+        os.chdir(f"{cwd}\\server")
 
-print("[STARTING] server is starting...")
-s = Server(PORT=6969)
-s.start()
+    print("[STARTING] server is starting...")
+    s = Server(PORT=6969)
+    s.start()
