@@ -28,21 +28,6 @@ class Server:
         # self.login = False
         self.participants = []
 
-
-    def send(self, conn, msg):
-        FORMAT = self.FORMAT
-        HEADER = self.HEADER
-
-        message = str(msg).encode(FORMAT)
-        msg_length = len(message)
-        send_length = str(msg_length).encode(FORMAT)
-        send_length += b' ' * (HEADER - len(send_length))
-        conn.send(send_length)
-        conn.send(message)
-        msg = conn.recv(2048).decode(FORMAT)
-        print(msg)
-        return msg
-
     def handle_client(self, conn, addr):
         HEADER = self.HEADER
         FORMAT = self.FORMAT
