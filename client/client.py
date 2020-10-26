@@ -9,7 +9,7 @@ from login import Login
 from mainPage import MainPage
 
 HEADER = 64
-PORT = 5050
+PORT = 6969
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
 SEPARATOR = '<SEP>'
@@ -35,7 +35,8 @@ def send(msg):
     client.send(send_length)
     client.send(message)
     msg = client.recv(2048).decode(FORMAT)
-    print(msg)
+    if msg != 'None':
+        print(msg)
     return msg
 
 def send_file(path, file_name):
@@ -67,6 +68,9 @@ def login_screen():
             loginPage.userColor, loginPage.passColor = colors[returned[0] == 'True'], colors[returned[1] == 'True']
             if returned.count('True') == 2:
                 loginPage.done = True
+            elif returned[0] == 'No':
+                loginPage.cmd = 'Account already in use'
+        
         text = loginPage.theOtherFont.render(loginPage.cmd, True, (170, 0, 0))
         loginPage.mainScreen.blit(text, (2, 280))
         pygame.display.update()
@@ -78,13 +82,14 @@ print('------------test------------')
 
 if not sucessful:
     exit()
+
 d = {
     "mode": "Shortest",
     "time": 15,
     "task": "Test"*10
 }
 
-info = json.loads(send(LOGIN_MESSAGE))["challenge_info"]
+info = json.loads(send(LOGIN_MESSAGE))
 user = os.path.abspath('client.py').split('\\')[2]
 file_path = f"C:\\Users\\{user}"
 example_file = send('example_file').split(SEPARATOR)
@@ -103,12 +108,17 @@ def main_screen():
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
+                send(DISCONNECT_MESSAGE)
                 return False
 
         main_page.mainScreen.blit(main_page.back, (0, 0))
         main_page.display_info()
         main_page.dev_button(events)
+        if not main_page.timerBool:
+            if send("start?") == "True":
+                main_page.timerBool = True
         main_page.timer()
+
         if a:=main_page.finish_gui(events):
             send_file(a, f'{username}.py')
 
@@ -117,4 +127,3 @@ def main_screen():
 
 main_screen()
 
-send(DISCONNECT_MESSAGE)

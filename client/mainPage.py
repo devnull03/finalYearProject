@@ -6,9 +6,6 @@ from modules.text_wrapper import drawText
 
 
 class MainPage:
-
-    mousePos = (0, 0)
-    
     def __init__(self, **kwargs):
         pygame.init()
         pygame.display.set_caption("Clash of Code")
@@ -20,8 +17,10 @@ class MainPage:
         self.clock = pygame.time.Clock()
         self.Font = pygame.font.SysFont('Times New Roman', 30)
         self.small_font = pygame.font.SysFont('Times New Roman', 20)
+        self.smaller_font = pygame.font.SysFont('Times New Roman', 17)
         self.black = (0, 0, 0)
         self.white = (255, 255, 255)
+        self.mousePos = (0, 0)
 
         self.mode = kwargs["mode"]
         self.task = kwargs["task"]
@@ -100,6 +99,15 @@ class MainPage:
         mode_text = self.Font.render(f"Mode - {self.mode}", True, black)
         self.mainScreen.blit(mode_text, mode_location)
         drawText(self.mainScreen, self.task, self.black, ((25, 115), (427, 227)), self.small_font)
+        # (19, 359), (447, 499)
+        example_location = (25, 396)
+        example_text = self.small_font.render("Examples :", True, black)
+        self.mainScreen.blit(example_text, (25,366))
+        n = 0
+        for i in self.examples:
+            example = self.smaller_font.render(f"solution({i})-> {self.examples[i]}", True, black)
+            self.mainScreen.blit(example, (example_location[0], example_location[1]+n))
+            n += 30
 
     def test_start(self):
         while 1:
@@ -128,12 +136,19 @@ class MainPage:
 
 
 if __name__ == "__main__":
-    os.chdir(f"{os.getcwd()}\\client")
+    cwd = os.getcwd()
+    if '\\client' not in cwd:
+        os.chdir(f"{cwd}\\client")
+
     d = {
         "mode": "Shortest",
         "time": 1,
-        "task": "Test task ........... .............. ..........",
-        "examples": None,
+        "task": "Test task " * 10,
+        "examples": {
+            1: 1,
+            2: 4,
+            3: 9
+        },
         "default_path": "C:\\Users\\Dell\\OneDrive\\Desktop"
     }
 

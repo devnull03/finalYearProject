@@ -1,8 +1,8 @@
-import sys
-import json
+import os, sys, json
 import socket
 import threading
 from database import checkUser
+import settings
 
 
 class Server:
@@ -14,13 +14,18 @@ class Server:
 
     def __init__(self, **kwargs):
         self.PORT = kwargs["PORT"]
-        self.files = kwargs["file"]["server_files"]
-        self.challenge = kwargs["file"]["challenge_info"]
+        self.challenge = {
+            "mode": settings.MODE,
+            "time": settings.TIME,
+            "task": settings.TASK,
+            "examples": settings.EXAMPLES
+        }
         self.SERVER = socket.gethostbyname(socket.gethostname())
         self.ADDR = (self.SERVER, self.PORT)
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind(self.ADDR)
-        self.login = False
+        # self.login = False
+        self.participants = []
 
 
     def send(self, conn, msg):
@@ -42,6 +47,7 @@ class Server:
         FORMAT = self.FORMAT
         SEPARATOR = self.SEPARATOR
         print(f"[NEW CONNECTION] {addr} connected.")
+        USER = ''
 
         connected = True
         while connected:
@@ -51,29 +57,45 @@ class Server:
                 msg = conn.recv(msg_length).decode(FORMAT)
                 info = msg.split(SEPARATOR)
 
+                if info == 'ping':
+                    conn.send('pong'.encode(FORMAT))
+
                 if info[0] == 'login':
                     user = checkUser(SEPARATOR.join((info[1], info[2])))
                     if user == f'True{SEPARATOR}True':
-                        self.login = True
-                    conn.send(user.encode(FORMAT))
+                        # self.login = True
+                        print(self.participants)
+                        if info[1] not in self.participants:
+                            conn.send(user.encode(FORMAT))
+                            USER = info[1]
+                            self.participants.append(USER)
+                        else:
+                            conn.send(f'No{SEPARATOR}No'.encode(FORMAT))
                     print(info)
+
                 elif info[0] == self.LOGIN_MESSAGE:
-                    # conn.send(json.dumps(self.challenge).encode(FORMAT))
-                    with open(sys.argv[1]) as file:
-                        conn.send(file.read().encode(FORMAT))
+                    conn.send(json.dumps(self.challenge).encode(FORMAT))
+
                 elif info[0] == 'file':
                     with open(f"solutions\\{info[1]}",'w') as file:
                         file.write(info[2])
                     conn.send('Done'.encode(FORMAT))
+
                 elif info[0] == 'example_file':
-                    with open(self.files["default_file"], 'r') as file:
-                        conn.send(
-                            f"challange.py{SEPARATOR}{file.read()}".encode(FORMAT)
-                        )
+                    with open(settings.EXAMPLE_FILE, 'r') as file:
+                        conn.send(f"challange.py{SEPARATOR}{file.read()}".encode(FORMAT))
+
+                else: 
+                    conn.send("None".encode(FORMAT))
 
                 if msg == self.DISCONNECT_MESSAGE:
+                    try:
+                        self.participants.remove(USER)
+                    except:
+                        pass
                     connected = False
-                print(f"[{addr}] {msg}")
+                if msg != 'start?' and info[0] != 'file':
+                    print(f"[{addr}] {msg}")
         conn.close()
 
     def start(self):
@@ -87,19 +109,11 @@ class Server:
             print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
 
 
-if len(sys.argv) > 1:
-    try:
-        with open(sys.argv[1], 'r') as json_file:
-            json_file = json.load(json_file)
-    except FileNotFoundError:
-        json_file = None
-        print('File not found')
-        sys.exit()
-else:
-    json_file = None
-    print('No file specified')
-    sys.exit()
+if __name__ == "__main__":
+    cwd = os.getcwd()
+    if not cwd.endswith('\\server'):
+        os.chdir(f"{cwd}\\server")
 
-print("[STARTING] server is starting...")
-s = Server(PORT=5050, file=json_file)
-s.start()
+    print("[STARTING] server is starting...")
+    s = Server(PORT=6969)
+    s.start()
