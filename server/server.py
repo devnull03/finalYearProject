@@ -1,10 +1,8 @@
 import os, json
 import socket
 import threading
-import pygame
 from database import checkUser
 import settings
-# from serverGui import serverGui
 from impoter import checker
 
 
@@ -33,7 +31,6 @@ class Server:
             "time": settings.TIME, 
             "participants": self.participants
         }
-        # self.GUI = serverGui(**self.info_for_gui)
 
     def actions(self, conn, info):
         FORMAT = self.FORMAT
@@ -63,20 +60,6 @@ class Server:
                 conn.send(f"challange.py{SEPARATOR}{file.read()}".encode(FORMAT))
         else: 
             conn.send("None".encode(FORMAT))
-
-    # def testRun(self):
-    #     while 1:
-    #         self.GUI.mainScreen.fill(self.GUI.background_color)
-    #         events = pygame.event.get()
-    #         for event in events:
-    #             if event.type == pygame.QUIT:
-    #                 pygame.quit()
-    #                 return False
- 
-    #         self.GUI.timer()
-    #         self.GUI.start_button(events)
- 
-    #         pygame.display.update()
  
     def handle_client(self, conn, addr):
         HEADER = self.HEADER
@@ -87,18 +70,6 @@ class Server:
 
         connected = True
         while connected:
-
-            # self.GUI.mainScreen.fill(self.GUI.background_color)
-            # events = pygame.event.get()
-            # for event in events:
-            #     if event.type == pygame.QUIT:
-            #         pygame.quit()
-            #         return False
-            # 
-            # self.GUI.timer()
-            # self.GUI.start_button(events)
-            # 
-            # pygame.display.update()
 
             msg_length = conn.recv(HEADER).decode(FORMAT)
             if msg_length:
