@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import random
 
-class login(object):
+class Login(object):
     def __init__(self, **kwargs):
         self.app = kwargs["app"]
         self.DISCONNECT_MESSAGE = kwargs["DISCONNECT_MESSAGE"]
@@ -121,7 +121,7 @@ if __name__ == "__main__":
         "LOGIN_MESSAGE": 'sendInfo',
         "send-func": test
     }
-    ui = login(**d)
+    ui = Login(**d)
     ui.setupUi(MainWindow)
     MainWindow.show()
     print('-------------test-------------')

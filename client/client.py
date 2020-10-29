@@ -1,11 +1,12 @@
 import json
 import socket
+import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 import time
 import os
 if '\\client' not in (cwd:=os.getcwd()):
     os.chdir(f"{cwd}\\client")
-
+from pyqt5_stuff.login import Login
 
 
 HEADER = 64
@@ -26,7 +27,6 @@ while 1:
     except ConnectionRefusedError:
         print('Looking for servers')
 
-
 def send(msg):
     message = str(msg).encode(FORMAT)
     msg_length = len(message)
@@ -42,41 +42,23 @@ def send(msg):
 def send_file(path, file_name):
     with open(path, 'r') as file:
         send(f'file{SEPARATOR}{file_name}{SEPARATOR}{file.read()}')
-    
 
-loginPage = Login()
-colors = (loginPage.red, loginPage.green)
+app = QtWidgets.QApplication(sys.argv)
+LoginWindow = QtWidgets.QMainWindow()
+info = {
+        "app": app,
+        "DISCONNECT_MESSAGE": DISCONNECT_MESSAGE,
+        "SEPARATOR": SEPARATOR,
+        "LOGIN_MESSAGE": LOGIN_MESSAGE,
+        "send-func": send
+    }
+login_page = Login(**info)
+login_page.setupUi(LoginWindow)
+LoginWindow.show()
+if not app.exec_():
+    app.quit()
 
-
-def login_screen():
-    while 1:
-        loginPage.mainScreen.fill((170, 170, 170))
-        events = pygame.event.get()
-        for event in events:
-            if event.type == pygame.QUIT:
-                send(DISCONNECT_MESSAGE)
-                pygame.quit()
-                return False
-            if loginPage.done:
-                pygame.quit()
-                time.sleep(1)
-                return True, loginPage.userName.get_text()
-        if loginPage.password_Box(events) or loginPage.userName_Box(events) or loginPage.login_Box(events):
-            returned = send(
-                SEPARATOR.join(('login', loginPage.userName.get_text(), loginPage.password.get_text()))
-            ).split(SEPARATOR)
-            loginPage.userColor, loginPage.passColor = colors[returned[0] == 'True'], colors[returned[1] == 'True']
-            if returned.count('True') == 2:
-                loginPage.done = True
-            elif returned[0] == 'No':
-                loginPage.cmd = 'Account already in use'
-        
-        text = loginPage.theOtherFont.render(loginPage.cmd, True, (170, 0, 0))
-        loginPage.mainScreen.blit(text, (2, 280))
-        pygame.display.update()
-        loginPage.clock.tick(30)
-
-sucessful, username = login_screen()
+sucessful, username = login_page.result
 
 print('------------test------------')
 
