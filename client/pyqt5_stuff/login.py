@@ -1,5 +1,4 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-import random
 
 class Login(object):
     def __init__(self, **kwargs):
@@ -85,9 +84,6 @@ class Login(object):
         self.loginButton.setText(_translate("MainWindow", "Login"))
         self.usrename_label.setText(_translate("MainWindow", "Username :"))
         self.password_label.setText(_translate("MainWindow", "Password :"))
-        
-        self.passWord_box.setText("123456")
-        self.userName_box.setText("devNull")
     
     def chech_cred(self):
         user = ("devNull", "123456")
@@ -105,12 +101,12 @@ class Login(object):
             self.result = (True, user[0])
             self.app.quit()
 
-def test(*args):
-    var = ("True", "False")
-    return f'{random.choice(var)}<SEP>{random.choice(var)}'
 
 if __name__ == "__main__":
-    import sys
+    import sys, random
+    def test(*args):
+        var = ("True", "False")
+        return f'{random.choice(var)}<SEP>{random.choice(var)}'
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
@@ -129,4 +125,3 @@ if __name__ == "__main__":
         app.quit()
 
     print(ui.result)
-    print("hallo")
