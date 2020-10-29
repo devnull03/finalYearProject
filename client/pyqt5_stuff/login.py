@@ -1,12 +1,20 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+import random
 
 class login(object):
-    def setupUi(self, MainWindow, app):
+    def __init__(self, **kwargs):
+        self.app = kwargs["app"]
+        self.DISCONNECT_MESSAGE = kwargs["DISCONNECT_MESSAGE"]
+        self.SEPARATOR = kwargs["SEPARATOR"]
+        self.LOGIN_MESSAGE = kwargs["LOGIN_MESSAGE"]
+        self.send = kwargs["send-func"]
+        self.result = (False, None)
+
+    def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(550, 300)
         MainWindow.setAutoFillBackground(True)
-        self.app = app
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setMinimumSize(QtCore.QSize(550, 300))
         self.centralwidget.setAutoFillBackground(True)
@@ -83,26 +91,42 @@ class login(object):
     
     def chech_cred(self):
         user = ("devNull", "123456")
+        user = (self.userName_box.text(), self.passWord_box.text())
+        user_check = self.send(self.SEPARATOR.join(('login',*user))).split(self.SEPARATOR)
         colors = (
             red:="rgb(250, 0, 0)",
             green:="rgb(0, 200, 0)"
             )
-        pass_color = colors[self.passWord_box.text() == user[1]]
-        user_color = colors[self.userName_box.text() == user[0]]
+        user_color = colors[user_check[0] == "True"]
+        pass_color = colors[user_check[1] == "True"]
         self.userColor.setStyleSheet(f"background-color: {user_color};")
         self.passColor.setStyleSheet(f"background-color: {pass_color};")
         if (green, green) == (pass_color, user_color):
+            self.result = (True, user[0])
             self.app.quit()
+
+def test(*args):
+    var = ("True", "False")
+    return f'{random.choice(var)}<SEP>{random.choice(var)}'
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = login()
-    ui.setupUi(MainWindow, app)
+    d = {
+        "app": app,
+        "DISCONNECT_MESSAGE": "!DISCONNECT",
+        "SEPARATOR": '<SEP>',
+        "LOGIN_MESSAGE": 'sendInfo',
+        "send-func": test
+    }
+    ui = login(**d)
+    ui.setupUi(MainWindow)
     MainWindow.show()
     print('-------------test-------------')
     if not app.exec_():
         app.quit()
 
+    print(ui.result)
     print("hallo")
