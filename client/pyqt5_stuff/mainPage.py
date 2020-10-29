@@ -1,7 +1,21 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from pathlib import Path
+import time
 
-class Ui_MainWindow(object):
+from PyQt5.QtWidgets import QWidget
+
+class MainPage(object):
+    def __init__(self, **kwargs):
+        self.mode = kwargs["mode"]
+        self.task = kwargs["task"]
+        self.time = kwargs["time"]
+        ex = kwargs["examples"]
+        self.examples_list = "\n".join(
+            f"solution({i})-> {ex[i]}" for i in ex
+        )
+        self.start = False
+        self.count = self.time*60
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(460, 800)
@@ -115,6 +129,7 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
         self.finish_button.setFont(font)
         self.finish_button.setObjectName("finish_button")
+        self.finish_button.clicked.connect(self.start_timer)
 
         self.select_button = QtWidgets.QPushButton(self.centralwidget)
         self.select_button.setGeometry(QtCore.QRect(260, 560, 71, 31))
@@ -122,6 +137,10 @@ class Ui_MainWindow(object):
         self.select_button.setObjectName("select_button")
         self.select_button.clicked.connect(lambda: self.showDialog(MainWindow))
         
+        timer = QtCore.QTimer(MainWindow)
+        timer.timeout.connect(self.showTime) 
+        timer.start(1000)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -129,12 +148,12 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Clash of Code"))
-        self.Timer.setText(_translate("MainWindow", "15:00"))
-        self.task_desc.setText(_translate("MainWindow", "test task"))
-        self.Mode.setText(_translate("MainWindow", "Mode : Shortest"))
+        self.Timer.setText(_translate("MainWindow", f"{self.time}:00"))
+        self.task_desc.setText(_translate("MainWindow", self.task))
+        self.Mode.setText(_translate("MainWindow", f"Mode : {self.mode}"))
         self.Task.setText(_translate("MainWindow", "Task"))
         self.Examples.setText(_translate("MainWindow", "Examples"))
-        self.examples.setText(_translate("MainWindow", "examples"))
+        self.examples.setText(_translate("MainWindow", self.examples_list))
         self.Select_file.setText(_translate("MainWindow", "Select File"))
         self.finish_button.setText(_translate("MainWindow", "Finish"))
         self.select_button.setText(_translate("MainWindow", "Select"))
@@ -144,13 +163,40 @@ class Ui_MainWindow(object):
         fname = QtWidgets.QFileDialog.getOpenFileName(MainWindow, 'Open file', home_dir, "python files (*.py)")
         # print(fname)
         self.file.setText(fname[0])
+  
+    def showTime(self): 
+        if self.start: 
+            self.count -= 1
+            if self.count == 0: 
+                self.start = False
+                self.Timer.setText("0:00")
+                self.select_button.click()
+        if self.start: 
+            minuts = self.count//60
+            seconds = "0"*((s:=self.count%60)<10) + str(s)
+            self.Timer.setText(f"{minuts}:{seconds}")
+
+    def start_timer(self): 
+        self.start = True
+        if self.count == 0: 
+            self.start = False
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
+    test_info = {
+        "mode": "Shortest",
+        "time": 1,
+        "task": "Test task " * 10,
+        "examples": {
+            1: 1,
+            2: 4,
+            3: 9
+        }
+    }
+    ui = MainPage(**test_info)
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
