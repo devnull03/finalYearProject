@@ -113,7 +113,7 @@ def main_screen():
 
         main_page.mainScreen.blit(main_page.back, (0, 0))
         main_page.display_info()
-        main_page.dev_button(events)
+        # main_page.dev_button(events)
         if not main_page.timerBool:
             if send("start?") == "True":
                 main_page.timerBool = True
@@ -126,4 +126,3 @@ def main_screen():
         main_page.clock.tick(30)
 
 main_screen()
-

@@ -16,7 +16,9 @@ class serverGui:
         self.white = (255, 255, 255)
         self.Font = pygame.font.SysFont('Times New Roman', 20)
         self.smallFont = pygame.font.SysFont('Times New Roman', 17)
-
+        
+        self.participants = kwargs["participants"]
+        
         self.timerBool = False
         self.t = time.time()
         self.Time = kwargs["time"] * 60

@@ -35,10 +35,6 @@ class MainPage:
         self.secs = 60
         self.mins = self.Time // 60 - 1
 
-        words = self.task.split()
-        print(words)
-
-
     def timer(self):
         location = (33, 20)
         if self.timerBool:

@@ -13,9 +13,9 @@
 
 # Server files ------------------------------------
 
-EXAMPLE_FILE = "C:\\Users\\Dell\\OneDrive\\Desktop\\test_files\\example.py"
-SOLUTION_FILE = "C:\\Users\\Dell\\OneDrive\\Desktop\\test_files\\check.py"
-TEST_CASES = "C:\\Users\\Dell\\OneDrive\\Desktop\\test_files\\test_cases.py"
+EXAMPLE_FILE = "C:\\Users\\Dell\\OneDrive\\Documents\\Code stuff\\Python\\projects\\Coc\\test_files\\example.py"
+SOLUTION_FILE = "C:\\Users\\Dell\\OneDrive\\Documents\\Code stuff\\Python\\projects\\Coc\\test_files\\check.py"
+TEST_CASES = "C:\\Users\\Dell\\OneDrive\\Documents\\Code stuff\\Python\\projects\\Coc\\test_files\\test_cases.py"
 
 #--------------------------------------------------
 

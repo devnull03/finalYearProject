@@ -129,7 +129,9 @@ class Login:
 
 
 if __name__ == "__main__":
-    os.chdir(f"{os.getcwd()}\\client")
+    cwd = os.getcwd()
+    if '\\client' not in cwd:
+        os.chdir(f"{cwd}\\client")
     
     test = Login().testing_start()
 
