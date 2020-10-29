@@ -1,12 +1,12 @@
 import json
 import socket
-import pygame
+from PyQt5 import QtCore, QtGui, QtWidgets
 import time
 import os
 if '\\client' not in (cwd:=os.getcwd()):
     os.chdir(f"{cwd}\\client")
-from login import Login
-from mainPage import MainPage
+
+
 
 HEADER = 64
 PORT = 6969

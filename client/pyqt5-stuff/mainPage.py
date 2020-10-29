@@ -142,7 +142,7 @@ class Ui_MainWindow(object):
     def showDialog(self, MainWindow):
         home_dir = str(Path.home())
         fname = QtWidgets.QFileDialog.getOpenFileName(MainWindow, 'Open file', home_dir, "python files (*.py)")
-        print(fname)
+        # print(fname)
         self.file.setText(fname[0])
 
 
