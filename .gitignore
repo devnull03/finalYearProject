@@ -29,3 +29,4 @@ test_files/__pycache__/test_cases.cpython-38.pyc
 test_files/__pycache__/check.cpython-38.pyc
 server/__pycache__/serverGui.cpython-38.pyc
 server/__pycache__/impoter.cpython-38.pyc
+client/pyqt5-stuff/test.py
