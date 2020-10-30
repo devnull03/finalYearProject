@@ -27,40 +27,7 @@ class Server:
         self.server.bind(self.ADDR)
         # self.login = False
         self.participants = []
-        self.info_for_gui = {
-            "time": settings.TIME, 
-            "participants": self.participants
-        }
 
-    def actions(self, conn, info):
-        FORMAT = self.FORMAT
-        SEPARATOR = self.SEPARATOR
-
-        if info == 'ping':
-            conn.send('pong'.encode(FORMAT))
-        if info[0] == 'login':
-            user = checkUser(SEPARATOR.join((info[1], info[2])))
-            if user == f'True{SEPARATOR}True':
-                print(self.participants)
-                if info[1] not in self.participants:
-                    conn.send(user.encode(FORMAT))
-                    USER = info[1]
-                    self.participants.append(USER)
-                else:
-                    conn.send(f'No{SEPARATOR}No'.encode(FORMAT))
-            print(info)
-        elif info[0] == self.LOGIN_MESSAGE:
-            conn.send(json.dumps(self.challenge).encode(FORMAT))
-        elif info[0] == 'file':
-            with open(f"solutions\\{info[1]}",'w') as file:
-                file.write(info[2])
-            conn.send('Done'.encode(FORMAT))
-        elif info[0] == 'example_file':
-            with open(settings.EXAMPLE_FILE, 'r') as file:
-                conn.send(f"challange.py{SEPARATOR}{file.read()}".encode(FORMAT))
-        else: 
-            conn.send("None".encode(FORMAT))
- 
     def handle_client(self, conn, addr):
         HEADER = self.HEADER
         FORMAT = self.FORMAT
@@ -76,7 +43,33 @@ class Server:
                 msg_length = int(msg_length)
                 msg = conn.recv(msg_length).decode(FORMAT)
                 info = msg.split(SEPARATOR)
-                self.actions(conn, info)
+
+                if info == 'ping':
+                    conn.send('pong'.encode(FORMAT))
+                if info[0] == 'login':
+                    user = checkUser(SEPARATOR.join((info[1], info[2])))
+                    if user == f'True{SEPARATOR}True':
+                        print(self.participants)
+                        if info[1] not in self.participants:
+                            conn.send(user.encode(FORMAT))
+                            USER = info[1]
+                            self.participants.append(USER)
+                        else:
+                            conn.send(f'No{SEPARATOR}No'.encode(FORMAT))
+                    else:
+                        conn.send(user.encode(FORMAT))
+                    print(info)
+                elif info[0] == self.LOGIN_MESSAGE:
+                    conn.send(json.dumps(self.challenge).encode(FORMAT))
+                elif info[0] == 'file':
+                    with open(f"solutions\\{info[1]}",'w') as file:
+                        file.write(info[2])
+                    conn.send('Done'.encode(FORMAT))
+                elif info[0] == 'example_file':
+                    with open(settings.EXAMPLE_FILE, 'r') as file:
+                        conn.send(f"challange.py{SEPARATOR}{file.read()}".encode(FORMAT))
+                else: 
+                    conn.send("None".encode(FORMAT))
 
                 if msg == self.DISCONNECT_MESSAGE:
                     try:
