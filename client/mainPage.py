@@ -6,6 +6,13 @@ from PyQt5.QtWidgets import QWidget
 
 class MainPage(object):
     def __init__(self, **kwargs):
+        self.app = kwargs["app"]
+        self.DISCONNECT_MESSAGE = kwargs["DISCONNECT_MESSAGE"]
+        self.SEPARATOR = kwargs["SEPARATOR"]
+        self.LOGIN_MESSAGE = kwargs["LOGIN_MESSAGE"]
+        self.send = kwargs["send-func"]
+        self.send_file = kwargs["file-func"]
+
         self.mode = kwargs["mode"]
         self.task = kwargs["task"]
         self.time = kwargs["time"]
@@ -127,7 +134,8 @@ class MainPage(object):
         font.setPointSize(12)
         self.finish_button.setFont(font)
         self.finish_button.setObjectName("finish_button")
-        self.finish_button.clicked.connect(self.start_timer)
+        # self.finish_button.clicked.connect(self.start_timer)
+        self.finish_button.clicked.connect(lambda: self.send_file(self.file.text()))
 
         self.select_button = QtWidgets.QPushButton(self.centralwidget)
         self.select_button.setGeometry(QtCore.QRect(260, 560, 71, 31))
@@ -197,4 +205,6 @@ if __name__ == "__main__":
     ui = MainPage(**test_info)
     ui.setupUi(MainWindow)
     MainWindow.show()
+    input()
+    ui.start_timer()
     sys.exit(app.exec_())

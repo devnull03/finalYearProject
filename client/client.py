@@ -6,8 +6,8 @@ import time
 import os
 if '\\client' not in (cwd:=os.getcwd()):
     os.chdir(f"{cwd}\\client")
-from pyqt5_stuff.login import Login
-
+from login import Login
+from mainPage import MainPage
 
 HEADER = 64
 PORT = 6969
@@ -39,20 +39,21 @@ def send(msg):
         print(msg)
     return msg
 
-def send_file(path, file_name):
+def send_file(path):
     with open(path, 'r') as file:
-        send(f'file{SEPARATOR}{file_name}{SEPARATOR}{file.read()}')
+        send(f'file{SEPARATOR}{username}.py{SEPARATOR}{file.read()}')
 
 app = QtWidgets.QApplication(sys.argv)
 LoginWindow = QtWidgets.QMainWindow()
-info = {
+app_info = {
         "app": app,
         "DISCONNECT_MESSAGE": DISCONNECT_MESSAGE,
         "SEPARATOR": SEPARATOR,
         "LOGIN_MESSAGE": LOGIN_MESSAGE,
-        "send-func": send
+        "send-func": send,
+        "file-func": send_file
     }
-login_page = Login(**info)
+login_page = Login(**app_info)
 login_page.setupUi(LoginWindow)
 LoginWindow.show()
 if not app.exec_():
@@ -63,6 +64,7 @@ sucessful, username = login_page.result
 print('------------test------------')
 
 if not sucessful:
+    send(DISCONNECT_MESSAGE)
     exit()
 
 d = {
@@ -81,30 +83,13 @@ else:
     file_path = f"{file_path}\\Desktop\\{example_file[0]}"
 with open(file_path, 'w') as file:
     file.write(example_file[1])
+# time.sleep(3)
 
-main_page = MainPage(**info, default_path=file_path)
-
-def main_screen():
-    while 1:
-        events = pygame.event.get()
-        for event in events:
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                send(DISCONNECT_MESSAGE)
-                return False
-
-        main_page.mainScreen.blit(main_page.back, (0, 0))
-        main_page.display_info()
-        # main_page.dev_button(events)
-        if not main_page.timerBool:
-            if send("start?") == "True":
-                main_page.timerBool = True
-        main_page.timer()
-
-        if a:=main_page.finish_gui(events):
-            send_file(a, f'{username}.py')
-
-        pygame.display.update()
-        main_page.clock.tick(30)
-
-main_screen()
+app = QtWidgets.QApplication(sys.argv)
+MainPageWindow = QtWidgets.QMainWindow()
+main_page = MainPage(**app_info, **info)
+main_page.setupUi(MainPageWindow)
+MainPageWindow.show()
+if not app.exec_():
+    send(DISCONNECT_MESSAGE)
+    sys.exit()
