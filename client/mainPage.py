@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QWidget
 
 class MainPage(object):
     def __init__(self, **kwargs):
-        self.app = kwargs["app"]
         self.DISCONNECT_MESSAGE = kwargs["DISCONNECT_MESSAGE"]
         self.SEPARATOR = kwargs["SEPARATOR"]
         self.LOGIN_MESSAGE = kwargs["LOGIN_MESSAGE"]
@@ -38,7 +37,7 @@ class MainPage(object):
         MainWindow.setFont(main_font)
         
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../assets/logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("./assets/logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -153,7 +152,7 @@ class MainPage(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Clash of Code"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Clash of Code | Main"))
         self.Timer.setText(_translate("MainWindow", f"{self.time}:00"))
         self.task_desc.setText(_translate("MainWindow", self.task))
         self.Mode.setText(_translate("MainWindow", f"Mode : {self.mode}"))
@@ -189,7 +188,12 @@ class MainPage(object):
 
 
 if __name__ == "__main__":
-    import sys
+    import sys, random, os
+
+    if '\\client' not in (cwd:=os.getcwd()):
+        os.chdir(f"{cwd}\\client")
+
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     test_info = {
@@ -202,9 +206,19 @@ if __name__ == "__main__":
             3: 9
         }
     }
-    ui = MainPage(**test_info)
+    def test(*args):
+        var = ("True", "False")
+        return f'{random.choice(var)}<SEP>{random.choice(var)}'
+    d = {
+        "DISCONNECT_MESSAGE": "!DISCONNECT",
+        "SEPARATOR": '<SEP>',
+        "LOGIN_MESSAGE": 'sendInfo',
+        "send-func": test,
+        "file-func": test
+    }
+    ui = MainPage(**test_info, **d)
     ui.setupUi(MainWindow)
     MainWindow.show()
-    input()
+    # input()
     ui.start_timer()
     sys.exit(app.exec_())

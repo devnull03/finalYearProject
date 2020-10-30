@@ -14,6 +14,10 @@ class Login(object):
         MainWindow.resize(550, 300)
         MainWindow.setAutoFillBackground(True)
 
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("./assets/logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MainWindow.setWindowIcon(icon)
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setMinimumSize(QtCore.QSize(550, 300))
         self.centralwidget.setAutoFillBackground(True)
@@ -80,7 +84,7 @@ class Login(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Clash of Code | Login"))
         self.loginButton.setText(_translate("MainWindow", "Login"))
         self.usrename_label.setText(_translate("MainWindow", "Username :"))
         self.password_label.setText(_translate("MainWindow", "Password :"))
@@ -103,7 +107,10 @@ class Login(object):
 
 
 if __name__ == "__main__":
-    import sys, random
+    import sys, random, os
+    if '\\client' not in (cwd:=os.getcwd()):
+        os.chdir(f"{cwd}\\client")
+
     def test(*args):
         var = ("True", "False")
         return f'{random.choice(var)}<SEP>{random.choice(var)}'
