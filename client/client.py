@@ -1,95 +1,110 @@
 import json
 import socket
-import sys
-from PyQt5 import QtCore, QtGui, QtWidgets
-import time
-import os
+import sys, os, time
+from PyQt5 import QtWidgets
+import threading
 if '\\client' not in (cwd:=os.getcwd()):
     os.chdir(f"{cwd}\\client")
 from login import Login
 from mainPage import MainPage
 
-HEADER = 64
-PORT = 6969
-FORMAT = 'utf-8'
-DISCONNECT_MESSAGE = "!DISCONNECT"
-SEPARATOR = '<SEP>'
-SERVER = "192.168.29.105"
-ADDR = (SERVER, PORT)
-LOGIN_MESSAGE = 'sendInfo'
+class Client:
+    HEADER = 64
+    PORT = 6969
+    FORMAT = 'utf-8'
+    DISCONNECT_MESSAGE = "!DISCONNECT"
+    SEPARATOR = '<SEP>'
+    LOGIN_MESSAGE = 'sendInfo'
+    def __init__(self) :
+        self.SERVER = "192.168.29.105"
+        self.ADDR = (self.SERVER, self.PORT)
+        self.available = True
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.app = QtWidgets.QApplication(sys.argv)
+        while 1:
+            try:
+                self.client.connect(self.ADDR)
+                break
+            except ConnectionRefusedError:
+                print('Looking for servers')
+        self.start_login()
 
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    def send(self, msg):
+        self.available = False
+        message = str(msg).encode(self.FORMAT)
+        msg_length = len(message)
+        send_length = str(msg_length).encode(self.FORMAT)
+        self.client.send(send_length)
+        self.client.send(message)
+        msg = self.client.recv(2048).decode(self.FORMAT)
+        self.available = True
+        if msg != 'None':
+            print(msg)
+        return msg
 
-while 1:
-    try:
-        client.connect(ADDR)
-        break
-    except ConnectionRefusedError:
-        print('Looking for servers')
+    def send_file(self, path):
+        with open(path, 'r') as file:
+            self.send(f'file{self.SEPARATOR}{self.username}.py{self.SEPARATOR}{file.read()}')
 
-def send(msg):
-    message = str(msg).encode(FORMAT)
-    msg_length = len(message)
-    send_length = str(msg_length).encode(FORMAT)
-    send_length += b' ' * (HEADER - len(send_length))
-    client.send(send_length)
-    client.send(message)
-    msg = client.recv(2048).decode(FORMAT)
-    if msg != 'None':
-        print(msg)
-    return msg
+    def start_login(self):
+        LoginWindow = QtWidgets.QMainWindow()
+        self.app_info = {
+                "app": self.app,
+                "DISCONNECT_MESSAGE": self.DISCONNECT_MESSAGE,
+                "SEPARATOR": self.SEPARATOR,
+                "LOGIN_MESSAGE": self.LOGIN_MESSAGE,
+                "send-func": self.send,
+                "file-func": self.send_file
+            }
+        login_page = Login(**self.app_info)
+        login_page.setupUi(LoginWindow)
+        LoginWindow.show()
+        if not self.app.exec_():
+            self.app.closeAllWindows()
 
-def send_file(path):
-    with open(path, 'r') as file:
-        send(f'file{SEPARATOR}{username}.py{SEPARATOR}{file.read()}')
+        sucessful, self.username = login_page.result
 
-app = QtWidgets.QApplication(sys.argv)
-LoginWindow = QtWidgets.QMainWindow()
-app_info = {
-        "app": app,
-        "DISCONNECT_MESSAGE": DISCONNECT_MESSAGE,
-        "SEPARATOR": SEPARATOR,
-        "LOGIN_MESSAGE": LOGIN_MESSAGE,
-        "send-func": send,
-        "file-func": send_file
-    }
-login_page = Login(**app_info)
-login_page.setupUi(LoginWindow)
-LoginWindow.show()
-if not app.exec_():
-    app.quit()
+        print('------------test------------')
 
-sucessful, username = login_page.result
+        if not sucessful:
+            self.send(self.DISCONNECT_MESSAGE)
+            exit()
+        else:
+            self.get_info()
+            self.start_mainPage()
 
-print('------------test------------')
+    def get_info(self):
+        self.info = json.loads(self.send(self.LOGIN_MESSAGE))
+        user = os.path.abspath('client.py').split('\\')[2]
+        file_path = f"C:\\Users\\{user}"
+        example_file = self.send('example_file').split(self.SEPARATOR)
+        if "Desktop" not in os.listdir(file_path):
+            file_path = f"{file_path}\\Onedrive\\Desktop\\{example_file[0]}"
+        else:
+            file_path = f"{file_path}\\Desktop\\{example_file[0]}"
+        with open(file_path, 'w') as file:
+            file.write(example_file[1])
 
-if not sucessful:
-    send(DISCONNECT_MESSAGE)
-    exit()
+    def start_check(self):
+        while 1:
+            if self.available:
+                if self.send("start?") == "yes":
+                    self.main_page.start_timer()
+                    break
 
-d = {
-    "mode": "Shortest",
-    "time": 15,
-    "task": "Test"*10
-}
+    def start_mainPage(self):
+        MainPageWindow = QtWidgets.QMainWindow()
+        self.main_page = MainPage(**self.app_info, **self.info)
+        self.main_page.setupUi(MainPageWindow)
+        MainPageWindow.show()
 
-info = json.loads(send(LOGIN_MESSAGE))
-user = os.path.abspath('client.py').split('\\')[2]
-file_path = f"C:\\Users\\{user}"
-example_file = send('example_file').split(SEPARATOR)
-if "Desktop" not in os.listdir(file_path):
-    file_path = f"{file_path}\\Onedrive\\Desktop\\{example_file[0]}"
-else:
-    file_path = f"{file_path}\\Desktop\\{example_file[0]}"
-with open(file_path, 'w') as file:
-    file.write(example_file[1])
-# time.sleep(3)
+        thread = threading.Thread(target=self.start_check)
+        thread.daemon = True
+        thread.start()
 
-app = QtWidgets.QApplication(sys.argv)
-MainPageWindow = QtWidgets.QMainWindow()
-main_page = MainPage(**app_info, **info)
-main_page.setupUi(MainPageWindow)
-MainPageWindow.show()
-if not app.exec_():
-    send(DISCONNECT_MESSAGE)
-    sys.exit()
+        if not self.app.exec_():
+            self.send(self.DISCONNECT_MESSAGE)
+            sys.exit()
+
+if __name__ == "__main__":
+    Client()
