@@ -3,7 +3,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class ServerGui(object):
     def __init__(self, **kwargs):
-        self.participants = "\n".join(f"{i+1}. {j}" for i,j in enumerate(kwargs["participants"]))
+        self.participants = kwargs["participants"]
         self.mode = kwargs["mode"]
         self.time = int(kwargs["time"])
         self.start = False
@@ -20,16 +20,18 @@ class ServerGui(object):
         MainWindow.setMinimumSize(QtCore.QSize(723, 448))
         MainWindow.setMaximumSize(QtCore.QSize(723, 448))
         MainWindow.setWindowOpacity(1.0)
-        
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("./assets/logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MainWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+
         self.player_scroll_area = QtWidgets.QScrollArea(self.centralwidget)
         self.player_scroll_area.setGeometry(QtCore.QRect(40, 110, 641, 181))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.player_scroll_area.sizePolicy().hasHeightForWidth())
-        
         self.player_scroll_area.setSizePolicy(sizePolicy)
         self.player_scroll_area.setTabletTracking(False)
         self.player_scroll_area.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
@@ -53,7 +55,7 @@ class ServerGui(object):
         self.playres.setObjectName("playres")
         self.verticalLayout.addWidget(self.playres)
         self.player_scroll_area.setWidget(self.scrollAreaWidgetContents)
-        
+
         self.Timer = QtWidgets.QLabel(self.centralwidget)
         self.Timer.setGeometry(QtCore.QRect(50, 20, 101, 31))
         font.setPointSize(15)
@@ -104,7 +106,8 @@ class ServerGui(object):
         self.update_board()
     
     def update_board(self):
-        self.playres.setText(self.participants)
+        self.participant_list = "\n".join(f"{i+1}. {j}" for i,j in enumerate(self.participants))
+        self.playres.setText(self.participant_list)
 
     def showTime(self): 
         if self.start: 
@@ -146,4 +149,6 @@ if __name__ == "__main__":
     ui = ServerGui(**info)
     ui.setupUi(MainWindow)
     MainWindow.show()
+    ui.participants.append(input(">>"))
+    ui.update_board()
     sys.exit(app.exec_())

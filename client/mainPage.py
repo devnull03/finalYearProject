@@ -1,8 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from pathlib import Path
-import time
 
-from PyQt5.QtWidgets import QWidget
 
 class MainPage(object):
     def __init__(self, **kwargs):
@@ -11,6 +9,7 @@ class MainPage(object):
         self.LOGIN_MESSAGE = kwargs["LOGIN_MESSAGE"]
         self.send = kwargs["send-func"]
         self.send_file = kwargs["file-func"]
+        self.participants = ["admin", "devNull"]
 
         self.mode = kwargs["mode"]
         self.task = kwargs["task"]
@@ -19,6 +18,7 @@ class MainPage(object):
         self.examples_list = "\n".join(f"solution({i})-> {ex[i]}" for i in ex)
         self.start = False
         self.count = self.time*60
+        self.sent = False
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -31,10 +31,10 @@ class MainPage(object):
         MainWindow.setMinimumSize(QtCore.QSize(460, 800))
         MainWindow.setMaximumSize(QtCore.QSize(460, 800))
         
-        main_font = QtGui.QFont()
-        main_font.setFamily("Times New Roman")
-        main_font.setPointSize(15)
-        MainWindow.setFont(main_font)
+        font = QtGui.QFont()
+        font.setFamily("Times New Roman")
+        font.setPointSize(15)
+        MainWindow.setFont(font)
         
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("./assets/logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -49,23 +49,21 @@ class MainPage(object):
         
         self.task_container = QtWidgets.QScrollArea(self.centralwidget)
         self.task_container.setGeometry(QtCore.QRect(20, 110, 421, 201))
-        self.task_container.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.task_container.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
-        self.task_container.setWidgetResizable(False)
+        self.task_container.setWidgetResizable(True)
         self.task_container.setObjectName("task_container")
-        self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 419, 279))
-        self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
-        self.task_desc = QtWidgets.QLabel(self.scrollAreaWidgetContents)
-        self.task_desc.setGeometry(QtCore.QRect(10, 10, 381, 351))
-        font_13 = QtGui.QFont()
-        font_13.setPointSize(13)
-        self.task_desc.setFont(font_13)
-        self.task_desc.setTextFormat(QtCore.Qt.AutoText)
+        self.scrollAreaWidgetContents_5 = QtWidgets.QWidget()
+        self.scrollAreaWidgetContents_5.setGeometry(QtCore.QRect(0, 0, 419, 199))
+        self.scrollAreaWidgetContents_5.setObjectName("scrollAreaWidgetContents_5")
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_5)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        font.setPointSize(13)
+        self.task_desc = QtWidgets.QLabel(self.scrollAreaWidgetContents_5)
+        self.task_desc.setFont(font)
         self.task_desc.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
         self.task_desc.setWordWrap(True)
         self.task_desc.setObjectName("task_desc")
-        self.task_container.setWidget(self.scrollAreaWidgetContents)
+        self.verticalLayout_3.addWidget(self.task_desc)
+        self.task_container.setWidget(self.scrollAreaWidgetContents_5)
         
         self.top_divider = QtWidgets.QFrame(self.centralwidget)
         self.top_divider.setGeometry(QtCore.QRect(20, 40, 421, 20))
@@ -80,7 +78,6 @@ class MainPage(object):
         
         self.Task = QtWidgets.QLabel(self.centralwidget)
         self.Task.setGeometry(QtCore.QRect(20, 80, 81, 21))
-        font = QtGui.QFont()
         font.setPointSize(19)
         self.Task.setFont(font)
         self.Task.setObjectName("Task")
@@ -88,22 +85,23 @@ class MainPage(object):
         self.Examples = QtWidgets.QLabel(self.centralwidget)
         self.Examples.setGeometry(QtCore.QRect(20, 325, 111, 31))
         self.Examples.setObjectName("Examples")
+
         self.example_container = QtWidgets.QScrollArea(self.centralwidget)
         self.example_container.setGeometry(QtCore.QRect(20, 360, 421, 131))
-        self.example_container.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.example_container.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
-        self.example_container.setWidgetResizable(False)
+        self.example_container.setWidgetResizable(True)
         self.example_container.setObjectName("example_container")
-        self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 419, 279))
-        self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
-        self.examples = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
-        self.examples.setGeometry(QtCore.QRect(10, 10, 401, 151))
-        self.examples.setFont(font_13)
+        self.scrollAreaWidgetContents_6 = QtWidgets.QWidget()
+        self.scrollAreaWidgetContents_6.setGeometry(QtCore.QRect(0, 0, 419, 129))
+        self.scrollAreaWidgetContents_6.setObjectName("scrollAreaWidgetContents_6")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_6)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.examples = QtWidgets.QLabel(self.scrollAreaWidgetContents_6)
+        font.setPointSize(13)
+        self.examples.setFont(font)
         self.examples.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
-        self.examples.setWordWrap(True)
         self.examples.setObjectName("examples")
-        self.example_container.setWidget(self.scrollAreaWidgetContents_2)
+        self.verticalLayout_2.addWidget(self.examples)
+        self.example_container.setWidget(self.scrollAreaWidgetContents_6)
         
         self.top_divider_2 = QtWidgets.QFrame(self.centralwidget)
         self.top_divider_2.setGeometry(QtCore.QRect(20, 512, 421, 20))
@@ -133,15 +131,31 @@ class MainPage(object):
         font.setPointSize(12)
         self.finish_button.setFont(font)
         self.finish_button.setObjectName("finish_button")
-        # self.finish_button.clicked.connect(self.start_timer)
-        self.finish_button.clicked.connect(lambda: self.send_file(self.file.text()))
+        self.finish_button.clicked.connect(self.file_func)
 
         self.select_button = QtWidgets.QPushButton(self.centralwidget)
         self.select_button.setGeometry(QtCore.QRect(260, 560, 71, 31))
         self.select_button.setFont(font)
         self.select_button.setObjectName("select_button")
         self.select_button.clicked.connect(lambda: self.showDialog(MainWindow))
-        
+
+        self.players_area = QtWidgets.QScrollArea(self.centralwidget)
+        self.players_area.setGeometry(QtCore.QRect(20, 620, 421, 161))
+        self.players_area.setWidgetResizable(True)
+        self.players_area.setObjectName("players_area")
+        self.scrollAreaWidgetContents_3 = QtWidgets.QWidget()
+        self.scrollAreaWidgetContents_3.setGeometry(QtCore.QRect(0, 0, 419, 159))
+        self.scrollAreaWidgetContents_3.setObjectName("scrollAreaWidgetContents_3")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_3)
+        self.verticalLayout.setObjectName("verticalLayout")
+        font.setPointSize(14)
+        self.players = QtWidgets.QLabel(self.scrollAreaWidgetContents_3)
+        self.players.setFont(font)
+        self.players.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.players.setObjectName("players")
+        self.verticalLayout.addWidget(self.players)
+        self.players_area.setWidget(self.scrollAreaWidgetContents_3)
+
         timer = QtCore.QTimer(MainWindow)
         timer.timeout.connect(self.showTime) 
         timer.start(1000)
@@ -162,6 +176,11 @@ class MainPage(object):
         self.Select_file.setText(_translate("MainWindow", "Select File"))
         self.finish_button.setText(_translate("MainWindow", "Finish"))
         self.select_button.setText(_translate("MainWindow", "Select"))
+        self.update_board()
+
+    def update_board(self):
+        self.participant_list = "\n".join(f"{i+1}. {j}" for i, j in enumerate(self.participants))
+        self.players.setText(self.participant_list)
 
     def showDialog(self, MainWindow):
         home_dir = str(Path.home())
@@ -176,7 +195,7 @@ class MainPage(object):
                 self.start = False
                 self.Timer.setText("0:00")
                 self.select_button.click()
-        if self.start: 
+        if self.start:
             minuts = self.count//60
             seconds = "0"*((s:=self.count%60)<10) + str(s)
             self.Timer.setText(f"{minuts}:{seconds}")
@@ -186,29 +205,41 @@ class MainPage(object):
         if self.count == 0: 
             self.start = False
 
+    def file_func(self):
+        if self.start and not self.sent:
+            self.send_file(self.file.text())
+            self.sent = True
+
 
 if __name__ == "__main__":
-    import sys, random, os
+    import sys
+    import random
+    import os
 
-    if '\\client' not in (cwd:=os.getcwd()):
+    if '\\client' not in (cwd := os.getcwd()):
         os.chdir(f"{cwd}\\client")
-
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     test_info = {
         "mode": "Shortest",
         "time": 1,
-        "task": "Test task " * 10,
+        "task": "Test task " * 50,
         "examples": {
             1: 1,
             2: 4,
-            3: 9
+            3: 9,
+            4: 16,
+            5: 25,
+            6: 36,
+            7: 49
         }
     }
+
     def test(*args):
         var = ("True", "False")
-        return f'{random.choice(var)}<SEP>{random.choice(var)}'
+        # return f'{random.choice(var)}<SEP>{random.choice(var)}'*
+        print(ui.sent)
     d = {
         "DISCONNECT_MESSAGE": "!DISCONNECT",
         "SEPARATOR": '<SEP>',

@@ -30,7 +30,6 @@ class Client:
         self.start_login()
 
     def send(self, msg):
-        self.available = False
         message = str(msg).encode(self.FORMAT)
         msg_length = len(message)
         send_length = str(msg_length).encode(self.FORMAT)
@@ -43,6 +42,7 @@ class Client:
         return msg
 
     def send_file(self, path):
+        self.available = False
         with open(path, 'r') as file:
             self.send(f'file{self.SEPARATOR}{self.username}.py{self.SEPARATOR}{file.read()}')
 
@@ -87,10 +87,11 @@ class Client:
 
     def start_check(self):
         while 1:
+            time.sleep(0.2)
             if self.available:
                 if self.send("start?") == "yes":
                     self.main_page.start_timer()
-                    break
+                    return
 
     def start_mainPage(self):
         MainPageWindow = QtWidgets.QMainWindow()
