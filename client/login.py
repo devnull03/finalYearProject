@@ -75,6 +75,13 @@ class Login(object):
         self.passColor.setInteractive(False)
         self.passColor.setObjectName("passColor")
 
+        self.alert = QtWidgets.QLabel(self.centralwidget)
+        self.alert.setGeometry(QtCore.QRect(10, 270, 271, 21))
+        font.setPointSize(12)
+        self.alert.setFont(font)
+        self.alert.setStyleSheet("color: \"red\"")
+        self.alert.setObjectName("alert")
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -105,6 +112,9 @@ class Login(object):
             self.result = (True, user[0])
             self.app.quit()
 
+    def set_alert(self, cmd):
+        _translate = QtCore.QCoreApplication.translate
+        self.alert.setText(_translate("MainWindow", cmd))
 
 if __name__ == "__main__":
     import sys, random, os
@@ -127,6 +137,7 @@ if __name__ == "__main__":
     ui = Login(**d)
     ui.setupUi(MainWindow)
     MainWindow.show()
+    ui.set_alert("Test")
     print('-------------test-------------')
     if not app.exec_():
         app.quit()
