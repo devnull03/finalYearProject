@@ -106,7 +106,9 @@ class ServerGui(object):
         self.update_board()
     
     def update_board(self):
-        self.participant_list = "\n".join(f"{i+1}. {j}" for i,j in enumerate(self.participants))
+        pp = self.participants
+        self.participant_list = "\n".join(
+            f"{i+1}. {j}"+f" - {pp[j]['%']}% - length {pp[j]['len']} - time {pp[j]['time']}"*bool(pp[j]['time']) for i,j in enumerate(pp))
         self.playres.setText(self.participant_list)
 
     def showTime(self): 
@@ -134,10 +136,11 @@ if __name__ == "__main__":
     info = {
         "mode": "shortest",
         "time": 15,
-        "participants": [
+    }
+    participants = [
             "admin",
             "dev",
-            "Null"
+            "Null",
             "test",
             "test test",
             "test test test",
@@ -145,10 +148,13 @@ if __name__ == "__main__":
             "another another test",
             "last test"
         ]
-    }
-    ui = ServerGui(**info)
+    p = {}
+    for i in participants:
+        p.update({i: {"time": None, "%": None, "len": None}})
+
+    p.update({"dev": {"time":"0:10", "%":100.0, "len":22}})
+    ui = ServerGui(**info, participants=p)
     ui.setupUi(MainWindow)
     MainWindow.show()
-    ui.participants.append(input(">>"))
     ui.update_board()
     sys.exit(app.exec_())

@@ -33,7 +33,9 @@ class Client:
         message = str(msg).encode(self.FORMAT)
         msg_length = len(message)
         send_length = str(msg_length).encode(self.FORMAT)
+        send_length += b' ' * (self.HEADER - len(send_length))
         self.client.send(send_length)
+        time.sleep(0.5)
         self.client.send(message)
         msg = self.client.recv(2048).decode(self.FORMAT)
         self.available = True

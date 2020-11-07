@@ -27,8 +27,7 @@ class Server:
         self.ADDR = (self.SERVER, self.PORT)
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind(self.ADDR)
-        self.participants = []
-        self.participant_time = []
+        self.participants = {}
         self.game_start = False
         self.checker = Checker(
             f"{os.getcwd()}\\solutions",
@@ -78,7 +77,7 @@ class Server:
                         if info[1] not in self.participants:
                             conn.send(user.encode(FORMAT))
                             USER = info[1]
-                            self.participants.append(USER)
+                            self.participants.update({USER: {"time": None, "%": None, "len": None, "logged": True}})
                             self.ui.participants = self.participants
                             self.ui.update_board()
                         else:
@@ -94,24 +93,24 @@ class Server:
                     conn.send(json.dumps(self.challenge).encode(FORMAT))
 
                 elif info[0] == 'file':
-                    with open(f"solutions\\{info[1]}",'w') as file:
+                    with open(f"solutions\\{info[1]}", 'w') as file:
                         file.write(info[2])
                     conn.send('Done'.encode(FORMAT))
-                    t = settings.TIME*60 - self.ui.count
-                    self.participant_time.append((USER, f"{t//60}:{'0'*((s:=t%60)<10) + str(s)}"))
+                    t = settings.TIME * 60 - self.ui.count
+                    self.participants[USER]["time"] = f"{t // 60}:{'0' * ((s := t % 60) < 10) + str(s)}"
                     self.check_files()
 
                 elif info[0] == 'example_file':
                     with open(settings.EXAMPLE_FILE, 'r') as file:
                         conn.send(f"challange.py{SEPARATOR}{file.read()}".encode(FORMAT))
-                else: 
+                else:
                     conn.send("None".encode(FORMAT))
 
                 if msg == self.DISCONNECT_MESSAGE:
-                    try:
-                        self.participants.remove(USER)
-                    except:
-                        pass
+                    if self.participants[USER]["time"] is None:
+                        self.participants.pop(USER)
+                    elif:
+                        self.participants[USER]["logged"] = False
                     connected = False
                 if msg != 'start?' and info[0] != 'file':
                     print(f"[{addr}] {msg}")
@@ -141,6 +140,7 @@ class Server:
         thread.start()
         if app.exec_():
             sys.exit()
+
 
 if __name__ == "__main__":
     cwd = os.getcwd()
