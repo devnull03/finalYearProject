@@ -2,7 +2,7 @@ import sqlite3
 from sqlite3 import Error
 
 
-def checkUser(info, connection='users.sqlite'):
+def checkUser(info, connection='assets/users.sqlite'):
     returned = None
     info = info.split('<SEP>')
     if len(info) == 0:
