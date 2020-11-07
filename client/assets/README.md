@@ -1,1 +1,1 @@
-All icons are inspired by [Codingame.com]((https://www.codingame.com/multiplayer/clashofcode))
+All icons are inspired by [Codingame.com](https://www.codingame.com/multiplayer/clashofcode)
