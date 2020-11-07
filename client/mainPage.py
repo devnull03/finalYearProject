@@ -193,7 +193,7 @@ class MainPage(object):
     def showTime(self): 
         if self.start: 
             self.count -= 1
-            if self.count == 0: 
+            if self.count == 0:  
                 self.start = False
                 self.Timer.setText("0:00")
                 self.select_button.click()

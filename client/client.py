@@ -35,12 +35,11 @@ class Client:
         send_length = str(msg_length).encode(self.FORMAT)
         send_length += b' ' * (self.HEADER - len(send_length))
         self.client.send(send_length)
-        time.sleep(0.5)
         self.client.send(message)
         msg = self.client.recv(2048).decode(self.FORMAT)
         self.available = True
-        if msg != 'None':
-            print(msg)
+        if msg.split(self.SEPARATOR)[0] not in ['None', 'fetch']:
+            print(f"[SERVER] {msg}")
         return msg
 
     def send_file(self, path):
@@ -66,8 +65,6 @@ class Client:
 
         sucessful, self.username = login_page.result
 
-        print('------------test------------')
-
         if not sucessful:
             self.send(self.DISCONNECT_MESSAGE)
             exit()
@@ -91,9 +88,13 @@ class Client:
         while 1:
             time.sleep(0.2)
             if self.available:
-                if self.send("start?") == "yes":
+                fetched = self.send("fetch").split(self.SEPARATOR)
+                if fetched[1] == "True":
+                    if not self.main_page.start:
+                        self.main_page.count = int(fetched[3])
                     self.main_page.start_timer()
-                    return
+                self.main_page.participants = json.loads(fetched[2])
+                self.main_page.update_board()
 
     def start_mainPage(self):
         MainPageWindow = QtWidgets.QMainWindow()
@@ -101,9 +102,9 @@ class Client:
         self.main_page.setupUi(MainPageWindow)
         MainPageWindow.show()
 
-        thread = threading.Thread(target=self.start_check)
-        thread.daemon = True
-        thread.start()
+        time_thread = threading.Thread(target=self.start_check)
+        time_thread.daemon = True
+        time_thread.start()
 
         if not self.app.exec_():
             self.send(self.DISCONNECT_MESSAGE)

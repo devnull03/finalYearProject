@@ -40,13 +40,8 @@ class Server:
     def check_files(self):
         checked = self.checker.check_files()
         for i in checked:
-            for j in self.participant_time:
-                if i[0] in j:
-                    t = j[1]
-                    break
-            for e in self.participants:
-                if e.startswith(i[0]):
-                    self.participants[self.participants.index(e)] = f"{i[0]} - {i[1]}% - length {i[2]} - time {t}"
+            self.participants[i[0]]['%'] = i[1]
+            self.participants[i[0]]['len'] = i[2]
         self.ui.participants = self.participants
         self.ui.update_board()
         print(checked)
@@ -67,8 +62,6 @@ class Server:
                 msg_length = int(msg_length)
                 msg = conn.recv(msg_length).decode(FORMAT)
                 info = msg.split(SEPARATOR)
-                if info == 'ping':
-                    conn.send('pong'.encode(FORMAT))
 
                 if info[0] == 'login':
                     user = checkUser(SEPARATOR.join((info[1], info[2])))
@@ -80,14 +73,21 @@ class Server:
                             self.participants.update({USER: {"time": None, "%": None, "len": None, "logged": True}})
                             self.ui.participants = self.participants
                             self.ui.update_board()
+                        elif self.participants[info[1]]["logged"] == False:
+                            conn.send(user.encode(FORMAT))
+                            USER = info[1]
+                            self.participants[info[1]]["logged"] = True
+                            self.ui.participants = self.participants
+                            self.ui.update_board()
                         else:
                             conn.send(f'No{SEPARATOR}No'.encode(FORMAT))
                     else:
                         conn.send(user.encode(FORMAT))
-                    print(info)
-
-                elif info[0] == "start?" and self.ui.start:
-                    conn.send("yes".encode(FORMAT))
+                
+                elif info[0] == "fetch":
+                    conn.send(
+                        SEPARATOR.join(('fetch',str(self.ui.start),json.dumps(self.participants),str(self.ui.count))).encode(FORMAT)
+                    )
 
                 elif info[0] == self.LOGIN_MESSAGE:
                     conn.send(json.dumps(self.challenge).encode(FORMAT))
@@ -112,7 +112,7 @@ class Server:
                     else:
                         self.participants[USER]["logged"] = False
                     connected = False
-                if msg != 'start?' and info[0] != 'file':
+                if info[0] not in ('start?','file','fetch'):
                     print(f"[{addr}] {msg}")
         conn.close()
 
@@ -148,3 +148,4 @@ if __name__ == "__main__":
         os.chdir(f"{cwd}\\server")
     print("[STARTING] server is starting...")
     Server()
+ 
