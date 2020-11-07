@@ -84,6 +84,11 @@ class Client:
         with open(file_path, 'w') as file:
             file.write(example_file[1])
 
+    def show_info(self):
+        self.main_page.task = self.info["task"]
+        self.main_page.ex = self.info["examples"]
+        self.main_page.update()
+
     def start_check(self):
         while 1:
             time.sleep(0.2)
@@ -91,6 +96,7 @@ class Client:
                 fetched = self.send("fetch").split(self.SEPARATOR)
                 if fetched[1] == "True":
                     if not self.main_page.start:
+                        self.show_info()
                         self.main_page.count = int(fetched[3])
                     self.main_page.start_timer()
                 self.main_page.participants = json.loads(fetched[2])
@@ -99,6 +105,8 @@ class Client:
     def start_mainPage(self):
         MainPageWindow = QtWidgets.QMainWindow()
         self.main_page = MainPage(**self.app_info, **self.info)
+        self.main_page.task = ""
+        self.main_page.ex = {}
         self.main_page.setupUi(MainPageWindow)
         MainPageWindow.show()
 
@@ -112,3 +120,4 @@ class Client:
 
 if __name__ == "__main__":
     Client()
+ 

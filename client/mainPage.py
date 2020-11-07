@@ -14,8 +14,8 @@ class MainPage(object):
         self.mode = kwargs["mode"]
         self.task = kwargs["task"]
         self.time = kwargs["time"]
-        ex = kwargs["examples"]
-        self.examples_list = "\n".join(f"solution({i})-> {ex[i]}" for i in ex)
+        self.ex = kwargs["examples"]
+
         self.start = False
         self.count = self.time*60
         self.sent = False
@@ -172,6 +172,7 @@ class MainPage(object):
         self.Mode.setText(_translate("MainWindow", f"Mode : {self.mode}"))
         self.Task.setText(_translate("MainWindow", "Task"))
         self.Examples.setText(_translate("MainWindow", "Examples"))
+        self.examples_list = "\n".join(f"solution({i})-> {self.ex[i]}" for i in self.ex)
         self.examples.setText(_translate("MainWindow", self.examples_list))
         self.Select_file.setText(_translate("MainWindow", "Select File"))
         self.finish_button.setText(_translate("MainWindow", "Finish"))
@@ -184,10 +185,15 @@ class MainPage(object):
             f"{i+1}. {j}"+f" - {pp[j]['%']}% - length {pp[j]['len']} - time {pp[j]['time']}"*bool(pp[j]['time']) for i,j in enumerate(pp))
         self.players.setText(self.participant_list)
 
+    def update(self):
+        _translate = QtCore.QCoreApplication.translate
+        self.task_desc.setText(_translate("MainWindow", self.task))
+        self.examples_list = "\n".join(f"solution({i})-> {self.ex[i]}" for i in self.ex)
+        self.examples.setText(_translate("MainWindow", self.examples_list))
+
     def showDialog(self, MainWindow):
         home_dir = str(Path.home())
         fname = QtWidgets.QFileDialog.getOpenFileName(MainWindow, 'Open file', home_dir, "python files (*.py)")
-        # print(fname)
         self.file.setText(fname[0])
   
     def showTime(self): 
