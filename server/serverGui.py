@@ -110,7 +110,7 @@ class ServerGui(object):
         self.participant_list = "\n".join(
             f"{i+1}. {j}"+f" - {pp[j]['%']}% - length {pp[j]['len']} - time {pp[j]['time']}"*bool(pp[j]['time']) for i,j in enumerate(pp))
         self.playres.setText(self.participant_list)
-
+ 
     def showTime(self): 
         if self.start: 
             self.count -= 1

@@ -9,7 +9,7 @@ class MainPage(object):
         self.LOGIN_MESSAGE = kwargs["LOGIN_MESSAGE"]
         self.send = kwargs["send-func"]
         self.send_file = kwargs["file-func"]
-        self.participants = ["admin", "devNull"]
+        self.participants = {}
 
         self.mode = kwargs["mode"]
         self.task = kwargs["task"]
@@ -179,7 +179,9 @@ class MainPage(object):
         self.update_board()
 
     def update_board(self):
-        self.participant_list = "\n".join(f"{i+1}. {j}" for i, j in enumerate(self.participants))
+        pp = self.participants
+        self.participant_list = "\n".join(
+            f"{i+1}. {j}"+f" - {pp[j]['%']}% - length {pp[j]['len']} - time {pp[j]['time']}"*bool(pp[j]['time']) for i,j in enumerate(pp))
         self.players.setText(self.participant_list)
 
     def showDialog(self, MainWindow):
@@ -247,8 +249,25 @@ if __name__ == "__main__":
         "send-func": test,
         "file-func": test
     }
+    participants = [
+            "admin",
+            "dev",
+            "Null",
+            "test",
+            "test test",
+            "test test test",
+            "another test",
+            "another another test",
+            "last test"
+        ]
+    p = {}
+    for i in participants:
+        p.update({i: {"time": None, "%": None, "len": None}})
+    p.update({"dev": {"time":"0:10", "%":100.0, "len":22}})
     ui = MainPage(**test_info, **d)
     ui.setupUi(MainWindow)
+    ui.participants = p
+    ui.update_board()
     MainWindow.show()
     # input()
     ui.start_timer()
