@@ -1,129 +1,113 @@
 import json
 import socket
-import pygame
-import time
-import os
+import sys, os, time
+from PyQt5 import QtWidgets
+import threading
 if '\\client' not in (cwd:=os.getcwd()):
     os.chdir(f"{cwd}\\client")
 from login import Login
 from mainPage import MainPage
 
-HEADER = 64
-PORT = 6969
-FORMAT = 'utf-8'
-DISCONNECT_MESSAGE = "!DISCONNECT"
-SEPARATOR = '<SEP>'
-SERVER = "192.168.29.105"
-ADDR = (SERVER, PORT)
-LOGIN_MESSAGE = 'sendInfo'
+class Client:
+    HEADER = 64
+    PORT = 6969
+    FORMAT = 'utf-8'
+    DISCONNECT_MESSAGE = "!DISCONNECT"
+    SEPARATOR = '<SEP>'
+    LOGIN_MESSAGE = 'sendInfo'
+    def __init__(self) :
+        self.SERVER = "192.168.29.105"
+        self.ADDR = (self.SERVER, self.PORT)
+        self.available = True
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.app = QtWidgets.QApplication(sys.argv)
+        while 1:
+            try:
+                self.client.connect(self.ADDR)
+                break
+            except ConnectionRefusedError:
+                print('Looking for servers')
+        self.start_login()
 
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    def send(self, msg):
+        message = str(msg).encode(self.FORMAT)
+        msg_length = len(message)
+        send_length = str(msg_length).encode(self.FORMAT)
+        send_length += b' ' * (self.HEADER - len(send_length))
+        self.client.send(send_length)
+        time.sleep(0.5)
+        self.client.send(message)
+        msg = self.client.recv(2048).decode(self.FORMAT)
+        self.available = True
+        if msg != 'None':
+            print(msg)
+        return msg
 
-while 1:
-    try:
-        client.connect(ADDR)
-        break
-    except ConnectionRefusedError:
-        print('Looking for servers')
+    def send_file(self, path):
+        self.available = False
+        with open(path, 'r') as file:
+            self.send(f'file{self.SEPARATOR}{self.username}.py{self.SEPARATOR}{file.read()}')
 
+    def start_login(self):
+        LoginWindow = QtWidgets.QMainWindow()
+        self.app_info = {
+                "app": self.app,
+                "DISCONNECT_MESSAGE": self.DISCONNECT_MESSAGE,
+                "SEPARATOR": self.SEPARATOR,
+                "LOGIN_MESSAGE": self.LOGIN_MESSAGE,
+                "send-func": self.send,
+                "file-func": self.send_file
+            }
+        login_page = Login(**self.app_info)
+        login_page.setupUi(LoginWindow)
+        LoginWindow.show()
+        if not self.app.exec_():
+            self.app.closeAllWindows()
 
-def send(msg):
-    message = str(msg).encode(FORMAT)
-    msg_length = len(message)
-    send_length = str(msg_length).encode(FORMAT)
-    send_length += b' ' * (HEADER - len(send_length))
-    client.send(send_length)
-    client.send(message)
-    msg = client.recv(2048).decode(FORMAT)
-    if msg != 'None':
-        print(msg)
-    return msg
+        sucessful, self.username = login_page.result
 
-def send_file(path, file_name):
-    with open(path, 'r') as file:
-        send(f'file{SEPARATOR}{file_name}{SEPARATOR}{file.read()}')
-    
+        print('------------test------------')
 
-loginPage = Login()
-colors = (loginPage.red, loginPage.green)
+        if not sucessful:
+            self.send(self.DISCONNECT_MESSAGE)
+            exit()
+        else:
+            self.get_info()
+            self.start_mainPage()
 
+    def get_info(self):
+        self.info = json.loads(self.send(self.LOGIN_MESSAGE))
+        user = os.path.abspath('client.py').split('\\')[2]
+        file_path = f"C:\\Users\\{user}"
+        example_file = self.send('example_file').split(self.SEPARATOR)
+        if "Desktop" not in os.listdir(file_path):
+            file_path = f"{file_path}\\Onedrive\\Desktop\\{example_file[0]}"
+        else:
+            file_path = f"{file_path}\\Desktop\\{example_file[0]}"
+        with open(file_path, 'w') as file:
+            file.write(example_file[1])
 
-def login_screen():
-    while 1:
-        loginPage.mainScreen.fill((170, 170, 170))
-        events = pygame.event.get()
-        for event in events:
-            if event.type == pygame.QUIT:
-                send(DISCONNECT_MESSAGE)
-                pygame.quit()
-                return False
-            if loginPage.done:
-                pygame.quit()
-                time.sleep(1)
-                return True, loginPage.userName.get_text()
-        if loginPage.password_Box(events) or loginPage.userName_Box(events) or loginPage.login_Box(events):
-            returned = send(
-                SEPARATOR.join(('login', loginPage.userName.get_text(), loginPage.password.get_text()))
-            ).split(SEPARATOR)
-            loginPage.userColor, loginPage.passColor = colors[returned[0] == 'True'], colors[returned[1] == 'True']
-            if returned.count('True') == 2:
-                loginPage.done = True
-            elif returned[0] == 'No':
-                loginPage.cmd = 'Account already in use'
-        
-        text = loginPage.theOtherFont.render(loginPage.cmd, True, (170, 0, 0))
-        loginPage.mainScreen.blit(text, (2, 280))
-        pygame.display.update()
-        loginPage.clock.tick(30)
+    def start_check(self):
+        while 1:
+            time.sleep(0.2)
+            if self.available:
+                if self.send("start?") == "yes":
+                    self.main_page.start_timer()
+                    return
 
-sucessful, username = login_screen()
+    def start_mainPage(self):
+        MainPageWindow = QtWidgets.QMainWindow()
+        self.main_page = MainPage(**self.app_info, **self.info)
+        self.main_page.setupUi(MainPageWindow)
+        MainPageWindow.show()
 
-print('------------test------------')
+        thread = threading.Thread(target=self.start_check)
+        thread.daemon = True
+        thread.start()
 
-if not sucessful:
-    exit()
+        if not self.app.exec_():
+            self.send(self.DISCONNECT_MESSAGE)
+            sys.exit()
 
-d = {
-    "mode": "Shortest",
-    "time": 15,
-    "task": "Test"*10
-}
-
-info = json.loads(send(LOGIN_MESSAGE))
-user = os.path.abspath('client.py').split('\\')[2]
-file_path = f"C:\\Users\\{user}"
-example_file = send('example_file').split(SEPARATOR)
-if "Desktop" not in os.listdir(file_path):
-    file_path = f"{file_path}\\Onedrive\\Desktop\\{example_file[0]}"
-else:
-    file_path = f"{file_path}\\Desktop\\{example_file[0]}"
-with open(file_path, 'w') as file:
-    file.write(example_file[1])
-
-main_page = MainPage(**info, default_path=file_path)
-
-def main_screen():
-    while 1:
-        events = pygame.event.get()
-        for event in events:
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                send(DISCONNECT_MESSAGE)
-                return False
-
-        main_page.mainScreen.blit(main_page.back, (0, 0))
-        main_page.display_info()
-        main_page.dev_button(events)
-        if not main_page.timerBool:
-            if send("start?") == "True":
-                main_page.timerBool = True
-        main_page.timer()
-
-        if a:=main_page.finish_gui(events):
-            send_file(a, f'{username}.py')
-
-        pygame.display.update()
-        main_page.clock.tick(30)
-
-main_screen()
-
+if __name__ == "__main__":
+    Client()

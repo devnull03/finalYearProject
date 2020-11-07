@@ -1,81 +1,160 @@
-import pygame
-import os
-import time
+from PyQt5 import QtCore, QtGui, QtWidgets
 
-class serverGui:
 
+class ServerGui(object):
     def __init__(self, **kwargs):
-        pygame.init()
-        pygame.display.set_caption("Clash of Code | Admin")
-        pygame.display.set_icon(pygame.image.load('assets/logo.png'))
-        self.display_size = (600, 350)
-        self.mainScreen = pygame.display.set_mode(self.display_size)
-        self.clock = pygame.time.Clock()
+        self.participants = kwargs["participants"]
+        self.mode = kwargs["mode"]
+        self.time = int(kwargs["time"])
+        self.start = False
+        self.count = self.time*60
 
-        self.background_color = (170, 170, 170)
-        self.white = (255, 255, 255)
-        self.Font = pygame.font.SysFont('Times New Roman', 20)
-        self.smallFont = pygame.font.SysFont('Times New Roman', 17)
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(723, 448)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
+        MainWindow.setSizePolicy(sizePolicy)
+        MainWindow.setMinimumSize(QtCore.QSize(723, 448))
+        MainWindow.setMaximumSize(QtCore.QSize(723, 448))
+        MainWindow.setWindowOpacity(1.0)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("./assets/logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MainWindow.setWindowIcon(icon)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
 
-        self.timerBool = False
-        self.t = time.time()
-        self.Time = kwargs["time"] * 60
-        self.secs = 60
-        self.mins = self.Time // 60 - 1
+        self.player_scroll_area = QtWidgets.QScrollArea(self.centralwidget)
+        self.player_scroll_area.setGeometry(QtCore.QRect(40, 110, 641, 181))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.player_scroll_area.sizePolicy().hasHeightForWidth())
+        self.player_scroll_area.setSizePolicy(sizePolicy)
+        self.player_scroll_area.setTabletTracking(False)
+        self.player_scroll_area.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+        self.player_scroll_area.setWidgetResizable(True)
+        self.player_scroll_area.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.player_scroll_area.setObjectName("player_scroll_area")
+        self.scrollAreaWidgetContents = QtWidgets.QWidget()
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 639, 179))
+        self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout.setObjectName("verticalLayout")
+        
+        self.playres = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+        self.playres.setEnabled(True)
+        font = QtGui.QFont()
+        font.setFamily("Times New Roman")
+        font.setPointSize(14)
+        self.playres.setFont(font)
+        self.playres.setTabletTracking(True)
+        self.playres.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.playres.setObjectName("playres")
+        self.verticalLayout.addWidget(self.playres)
+        self.player_scroll_area.setWidget(self.scrollAreaWidgetContents)
 
-    def timer(self):
-        location = (30, 20)
-        if self.timerBool:
-            minus = time.time() - self.t
-            sec = int(self.secs - minus)
-            secc = f"0{sec}" if sec < 10 else sec
-            Timer = f"{self.mins}:{secc}"
-            if sec < 0:
-                self.secs += 60
-                self.mins -= 1
-                if self.mins < 0:
-                    self.timerBool = False
-        else:
-            Timer = f"{self.mins + 1}:00"
-        text = self.Font.render(str(Timer), True, (0, 0, 0))
-        self.mainScreen.blit(text, location)
+        self.Timer = QtWidgets.QLabel(self.centralwidget)
+        self.Timer.setGeometry(QtCore.QRect(50, 20, 101, 31))
+        font.setPointSize(15)
+        self.Timer.setFont(font)
+        self.Timer.setAlignment(QtCore.Qt.AlignCenter)
+        self.Timer.setObjectName("Timer")
+        
+        self.line = QtWidgets.QFrame(self.centralwidget)
+        self.line.setGeometry(QtCore.QRect(37, 50, 646, 20))
+        self.line.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line.setObjectName("line")
+        
+        self.mode_label = QtWidgets.QLabel(self.centralwidget)
+        self.mode_label.setGeometry(QtCore.QRect(390, 20, 281, 31))
+        self.mode_label.setFont(font)
+        self.mode_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.mode_label.setObjectName("mode_label")
+        
+        self.player_label = QtWidgets.QLabel(self.centralwidget)
+        self.player_label.setGeometry(QtCore.QRect(40, 70, 161, 31))
+        self.player_label.setFont(font)
+        self.player_label.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.player_label.setObjectName("player_label")
+        
+        self.start_timer_button = QtWidgets.QPushButton(self.centralwidget)
+        self.start_timer_button.setGeometry(QtCore.QRect(40, 370, 141, 41))
+        font.setPointSize(12)
+        self.start_timer_button.setFont(font)
+        self.start_timer_button.setObjectName("start_timer_button")
+        self.start_timer_button.clicked.connect(self.start_timer)
 
-    def start_button(self, events):
-        pos = (499, 297)
-        size = (60, 25)
-        mouse = pygame.mouse.get_pos()
-        pygame.draw.rect(self.mainScreen, (100, 100, 100), pygame.Rect(pos, size))
-        pygame.draw.rect(self.mainScreen, self.white, pygame.Rect(pos, size), 2)
+        timer = QtCore.QTimer(MainWindow)
+        timer.timeout.connect(self.showTime) 
+        timer.start(1000)
+        
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        text = self.smallFont.render("Start", True, (0, 0, 0))
-        self.mainScreen.blit(text, (pos[0]+13, pos[1]+2))
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "Clash of Code | Admin"))
+        self.Timer.setText(_translate("MainWindow", f"{self.time}:00"))
+        self.mode_label.setText(_translate("MainWindow", f"Mode : {self.mode}"))
+        self.player_label.setText(_translate("MainWindow", "Players"))
+        self.start_timer_button.setText(_translate("MainWindow", "Start"))
+        self.update_board()
+    
+    def update_board(self):
+        pp = self.participants
+        self.participant_list = "\n".join(
+            f"{i+1}. {j}"+f" - {pp[j]['%']}% - length {pp[j]['len']} - time {pp[j]['time']}"*bool(pp[j]['time']) for i,j in enumerate(pp))
+        self.playres.setText(self.participant_list)
 
-        for event in events:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if pos[0] <= mouse[0] <= pos[0] + size[0] and pos[1] <= mouse[1] <= pos[1] + size[1]:
-                    if self.timerBool is False:
-                        self.t = time.time()
-                    self.timerBool = True
+    def showTime(self): 
+        if self.start: 
+            self.count -= 1
+            if self.count == 0: 
+                self.start = False
+                self.Timer.setText("0:00")
+                self.select_button.click()
+        if self.start: 
+            minuts = self.count//60
+            seconds = "0"*((s:=self.count%60)<10) + str(s)
+            self.Timer.setText(f"{minuts}:{seconds}")
 
-    def testRun(self):
-        while 1:
-            self.mainScreen.fill(self.background_color)
-            events = pygame.event.get()
-            for event in events:
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    return False
-
-            self.timer()
-            self.start_button(events)
-
-            pygame.display.update()
+    def start_timer(self): 
+        self.start = True
+        if self.count == 0: 
+            self.start = False
 
 
 if __name__ == "__main__":
-    cwd = os.getcwd()
-    if '\\server' not in cwd:
-        os.chdir(f"{cwd}\\server")
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    info = {
+        "mode": "shortest",
+        "time": 15,
+    }
+    participants = [
+            "admin",
+            "dev",
+            "Null",
+            "test",
+            "test test",
+            "test test test",
+            "another test",
+            "another another test",
+            "last test"
+        ]
+    p = {}
+    for i in participants:
+        p.update({i: {"time": None, "%": None, "len": None}})
 
-    serverGui(time=1).testRun()
-
+    p.update({"dev": {"time":"0:10", "%":100.0, "len":22}})
+    ui = ServerGui(**info, participants=p)
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    ui.update_board()
+    sys.exit(app.exec_())

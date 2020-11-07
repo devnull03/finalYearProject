@@ -25,3 +25,13 @@ server/solutions/devNull.py
 server/solutions/__pycache__/devNull.cpython-38.pyc
 server/__pycache__/settings.cpython-38.pyc
 server/solutions/__pycache__/admin.cpython-38.pyc
+test_files/__pycache__/test_cases.cpython-38.pyc
+test_files/__pycache__/check.cpython-38.pyc
+server/__pycache__/serverGui.cpython-38.pyc
+server/__pycache__/impoter.cpython-38.pyc
+client/pyqt5-stuff/test.py
+client/pyqt5_stuff/__pycache__/login.cpython-38.pyc
+server/serverGui.ui
+client/pyqt5_stuff/mainPage_temp.ui
+client/pyqt5_stuff/temp.py
+
