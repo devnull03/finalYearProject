@@ -109,7 +109,7 @@ class Server:
                 if msg == self.DISCONNECT_MESSAGE:
                     if self.participants[USER]["time"] is None:
                         self.participants.pop(USER)
-                    elif:
+                    else:
                         self.participants[USER]["logged"] = False
                     connected = False
                 if msg != 'start?' and info[0] != 'file':
