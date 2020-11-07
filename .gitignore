@@ -34,4 +34,4 @@ client/pyqt5_stuff/__pycache__/login.cpython-38.pyc
 server/serverGui.ui
 client/pyqt5_stuff/mainPage_temp.ui
 client/pyqt5_stuff/temp.py
-
+server/solutions/admin.py
