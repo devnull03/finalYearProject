@@ -97,8 +97,7 @@ class Login(object):
         self.password_label.setText(_translate("MainWindow", "Password :"))
     
     def chech_cred(self):
-        user = ("devNull", "123456")
-        user = (self.userName_box.text(), self.passWord_box.text())
+        user = (self.userName_box.text().strip(), self.passWord_box.text().strip())
         user_check = self.send(self.SEPARATOR.join(('login',*user))).split(self.SEPARATOR)
         colors = (
             red:="rgb(250, 0, 0)",
