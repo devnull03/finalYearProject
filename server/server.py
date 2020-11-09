@@ -42,9 +42,26 @@ class Server:
         for i in checked:
             self.participants[i[0]]['%'] = i[1]
             self.participants[i[0]]['len'] = i[2]
+        self.participants = self.rank(self.participants, mode=settings.MODE)
         self.ui.participants = self.participants
         self.ui.update_board()
         print(checked)
+
+    @staticmethod
+    def rank(dictionary, mode):
+        d = dictionary
+        func = lambda x: int((t:=d[x]["time"].split(":"))[0])*60 + int(t[1]) if d[x]["time"] else 10**10
+        
+        l = [
+            lambda: {i:d[i] for i in sorted(d,key=func)},
+            lambda: {i:d[i] for i in sorted(d,key=lambda x:d[x]["len"]if d[x]["len"] else 10**10)}
+        ]
+        if mode.lower() == "fastest":
+            l.reverse()
+        d = l[0]()
+        d = l[1]()
+        d = {i:d[i] for i in sorted(d,key=lambda x:d[x]["%"]if d[x]["%"] else 0,reverse=1)}
+        return d
 
     def handle_client(self, conn, addr):
         HEADER = self.HEADER
@@ -109,6 +126,9 @@ class Server:
                 if msg == self.DISCONNECT_MESSAGE:
                     if self.participants[USER]["time"] is None:
                         self.participants.pop(USER)
+                        self.ui.participants = self.participants
+                        self.ui.update_board()
+
                     else:
                         self.participants[USER]["logged"] = False
                     connected = False
