@@ -12,10 +12,11 @@
 # 
 
 # Server files ------------------------------------
+folder = "C:\\Users\\Dell\\OneDrive\\Documents\\Code stuff\\Python\\projects\\Coc\\test_files"
 
-EXAMPLE_FILE = "C:\\Users\\Dell\\OneDrive\\Documents\\Code stuff\\Python\\projects\\Coc\\test_files\\example.py"
-SOLUTION_FILE = "C:\\Users\\Dell\\OneDrive\\Documents\\Code stuff\\Python\\projects\\Coc\\test_files\\check.py"
-TEST_CASES = "C:\\Users\\Dell\\OneDrive\\Documents\\Code stuff\\Python\\projects\\Coc\\test_files\\test_cases.py"
+EXAMPLE_FILE = f"{folder}\\example.py"
+SOLUTION_FILE = f"{folder}\\check.py"
+TEST_CASES = f"{folder}\\test_cases.py"
 
 #--------------------------------------------------
 
