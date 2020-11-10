@@ -7,16 +7,17 @@ if '\\client' not in (cwd:=os.getcwd()):
     os.chdir(f"{cwd}\\client")
 from login import Login
 from mainPage import MainPage
+import settings
 
 class Client:
     HEADER = 64
-    PORT = 6969
     FORMAT = 'utf-8'
     DISCONNECT_MESSAGE = "!DISCONNECT"
     SEPARATOR = '<SEP>'
     LOGIN_MESSAGE = 'sendInfo'
     def __init__(self) :
-        self.SERVER = "192.168.29.105"
+        self.SERVER = settings.SERVER
+        self.PORT = settings.PORT
         self.ADDR = (self.SERVER, self.PORT)
         self.available = True
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
