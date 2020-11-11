@@ -14,7 +14,6 @@ class Server:
     DISCONNECT_MESSAGE = "!DISCONNECT"
     SEPARATOR = '<SEP>'
     LOGIN_MESSAGE = 'sendInfo'
-    PORT = 6969
 
     def __init__(self):
         self.challenge = {
@@ -24,6 +23,7 @@ class Server:
             "examples": settings.EXAMPLES
         }
         self.SERVER = socket.gethostbyname(socket.gethostname())
+        self.PORT = 6969
         self.ADDR = (self.SERVER, self.PORT)
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind(self.ADDR)
@@ -51,7 +51,6 @@ class Server:
     def rank(dictionary, mode):
         d = dictionary
         func = lambda x: int((t:=d[x]["time"].split(":"))[0])*60 + int(t[1]) if d[x]["time"] else 10**10
-        
         l = [
             lambda: {i:d[i] for i in sorted(d,key=func)},
             lambda: {i:d[i] for i in sorted(d,key=lambda x:d[x]["len"]if d[x]["len"] else 10**10)}
