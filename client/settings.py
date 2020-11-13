@@ -1,4 +1,3 @@
-
-SERVER = "192.168.29.105" 
-PORT = 6969 
- 
+import socket
+SERVER = socket.gethostbyname(socket.gethostname())
+PORT = 6969

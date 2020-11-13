@@ -17,7 +17,7 @@ def set_server(addr, port):
     if port == "":
         port = settings.PORT
     with open("client/settings.py", "w") as settings_file:
-        settings_file.write(f"\nSERVER = \"{addr}\" \nPORT = {port} \n ")
+        settings_file.write(f"\nSERVER = \"{addr}\" \nPORT = {port} \n"+default)
 
 info = {'server': "Clash of Code - Server", 'client': "Clash of Code"}
 for i in info:
@@ -26,10 +26,20 @@ for i in info:
     icon = f"{os.getcwd()}\\{i}\\assets\\logo.ico"
     mkshortcut(target, wDir, icon, info[i])
 
+default = '''
+# 
+# Default config:
+# 
+# import socket
+# SERVER = socket.gethostbyname(socket.gethostname())
+# PORT = 6969 
+# 
+'''
+
 server = input("[Press enter to skip] Server address: ")
 if server == "":
     sys.exit()
 port = input("[Press enter to use default] Port to be used: ")
 
-# set_server("192.168.29.105", 6969)
+# set_server(socket.gethostbyname(socket.gethostname()), 6969)
 set_server(server, port)
