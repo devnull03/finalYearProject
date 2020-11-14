@@ -29,10 +29,16 @@ class Checker:
 				continue
 			module = __import__(file.split('.')[0])
 			try:
-				l = [
-					module.solution(case) == self.check.solution(case) for case in self.test_cases
-				]
-			except AttributeError:
+				l = []
+				for case in self.test_cases:
+					if type(case) in (list, tuple):
+						res = module.solution(*case) == self.check.solution(*case)
+					elif type(case) is dict:
+						res = module.solution(**case) == self.check.solution(**case)
+					else:
+						res = module.solution(case) == self.check.solution(case)
+					l.append(res)
+			except:
 				l = [False]
 			with open(f'{self.solutions_path}\\{file}', 'r') as f:
 				file_length = len(f.read())

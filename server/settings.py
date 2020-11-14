@@ -19,7 +19,7 @@ presets = {
     'CardTiming': f"{presets_folder}\\CardTiming",
     'Treasure': f"{presets_folder}\\Treasure"
 }
-PRESET = 'CardTiming'
+PRESET = 'Treasure'
 
 # Server files ------------------------------------
 folder = os.getcwd().rstrip('\\server') + "\\test_files"
@@ -29,7 +29,7 @@ if PRESET:
 EXAMPLE_FILE = f"{folder}\\example.py"
 SOLUTION_FILE = f"{folder}\\check.py"
 TEST_CASES = f"{folder}\\test_cases.py"
-print(SOLUTION_FILE)
+
 #--------------------------------------------------
 # 
 # MODE :
