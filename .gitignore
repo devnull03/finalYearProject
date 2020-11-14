@@ -37,3 +37,10 @@ client/pyqt5_stuff/temp.py
 server/solutions/admin.py
 client/__pycache__/settings.cpython-38.pyc
 client/pyqt5_stuff/untitled.ui
+test.py
+client/__pycache__/endScreen.cpython-38.pyc
+__pycache__/testing.cpython-38.pyc
+server/__pycache__/server.cpython-38.pyc
+server/presets/__pycache__/info.cpython-38.pyc
+server/presets/CardTiming/__pycache__/check.cpython-38.pyc
+server/presets/CardTiming/__pycache__/test_cases.cpython-38.pyc
