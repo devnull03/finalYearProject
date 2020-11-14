@@ -5,7 +5,7 @@ class EndScreen(object):
     def __init__(self, **kwargs):
         self.participants = kwargs["participants"]
         self.mode = kwargs["mode"]
-        self.time = kwargs['time']
+        self.username = kwargs['username']
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -85,11 +85,10 @@ class EndScreen(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Clash of Code | Admin"))
-        self.Timer.setText(_translate("MainWindow", f"{self.time}:00"))
-        self.mode_label.setText(_translate("MainWindow", f"Mode : {self.mode}"))
-        self.player_label.setText(_translate("MainWindow", "Players"))
+        self._translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(self._translate("MainWindow", "Clash of Code | Admin"))
+        self.mode_label.setText(self._translate("MainWindow", f"Mode : {self.mode.title()}"))
+        self.player_label.setText(self._translate("MainWindow", "Players"))
         self.update_board()
     
     def update_board(self):
@@ -97,16 +96,13 @@ class EndScreen(object):
         self.participant_list = "\n".join(
             f"{i+1}. {j}"+f" - {pp[j]['%']}% - length {pp[j]['len']} - time {pp[j]['time']}"*bool(pp[j]['time']) for i,j in enumerate(pp))
         self.playres.setText(self.participant_list)
- 
+        self.rank = list(self.participants.keys()).index(self.username) + 1
+        self.Timer.setText(self._translate("MainWindow", f"Rank: {self.rank}"))
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    info = {
-        "mode": "shortest",
-        "time": 15,
-    }
     participants = [
             "admin",
             "dev",
@@ -121,9 +117,14 @@ if __name__ == "__main__":
     p = {}
     for i in participants:
         p.update({i: {"time": None, "%": None, "len": None}})
-
+    info = {
+        "mode": "shortest",
+        "participants": p,
+        'username': "Null"
+    }
     p.update({"dev": {"time":"0:10", "%":100.0, "len":22}})
-    ui = EndScreen(**info, participants=p)
+
+    ui = EndScreen(**info)
     ui.setupUi(MainWindow)
     MainWindow.show()
     ui.update_board()
