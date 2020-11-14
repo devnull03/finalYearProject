@@ -1,3 +1,4 @@
+import os
 # 
 # EXAMPLE_FILE : 
 #     Path to the file that will be 
@@ -10,9 +11,14 @@
 # TEST_CASES :
 #      Path to the file that contains all the testcases
 # 
+presets_folder = os.getcwd() + "\\presets"
+presets = {
+    'CardTiming': f"{presets_folder}\\CardTiming",
+    'Treasure': f"{presets_folder}\\Treasure"
+}
 
 # Server files ------------------------------------
-folder = "C:\\Users\\Dell\\OneDrive\\Documents\\Code stuff\\Python\\projects\\Coc\\test_files"
+folder = f"{os.getcwd().rstrip('\\server')}\\test_files"
 
 EXAMPLE_FILE = f"{folder}\\example.py"
 SOLUTION_FILE = f"{folder}\\check.py"
@@ -40,7 +46,6 @@ MODE = "Shortest"
 TIME = 10
 TASK = "test task"*10
 
-# Maximum 3 examples 
 EXAMPLES = {
     1: 1,
     2: 4,

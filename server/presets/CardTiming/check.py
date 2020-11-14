@@ -1,0 +1,1 @@
+solution=lambda x:x%2*[28,30]+[31]
