@@ -19,6 +19,8 @@ class MainPage(object):
         self.start = False
         self.count = self.time*60
         self.sent = False
+        self.countdown = 6
+        self.started = False
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -197,6 +199,12 @@ class MainPage(object):
         self.file.setText(fname[0])
   
     def showTime(self): 
+        if not self.started:
+            self.countdown -= 1
+            if self.countdown == 0:
+                self.started = True
+            self.Timer.setText(f"0:0{self.countdown}")
+            return
         if self.start: 
             self.count -= 1
             if self.count == 0:  
@@ -214,7 +222,7 @@ class MainPage(object):
             self.start = False
 
     def file_func(self):
-        if self.start and not self.sent:
+        if self.start and not self.sent and self.started:
             self.send_file(self.file.text())
             self.sent = True
 
@@ -231,7 +239,7 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     test_info = {
         "mode": "Shortest",
-        "time": 1,
+        "time": 10,
         "task": "Test task " * 50,
         "examples": {
             1: 1,

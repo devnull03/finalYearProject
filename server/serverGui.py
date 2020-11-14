@@ -8,6 +8,9 @@ class ServerGui(object):
         self.time = int(kwargs["time"])
         self.start = False
         self.count = self.time*60
+        self.countdown = 6
+        self.started = False
+
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -112,6 +115,12 @@ class ServerGui(object):
         self.playres.setText(self.participant_list)
  
     def showTime(self): 
+        if not self.started:
+            self.countdown -= 1
+            if self.countdown == 0:
+                self.started = True
+            self.Timer.setText(f"0:0{self.countdown}")
+            return
         if self.start: 
             self.count -= 1
             if self.count == 0: 
