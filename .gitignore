@@ -44,3 +44,5 @@ server/__pycache__/server.cpython-38.pyc
 server/presets/__pycache__/info.cpython-38.pyc
 server/presets/CardTiming/__pycache__/check.cpython-38.pyc
 server/presets/CardTiming/__pycache__/test_cases.cpython-38.pyc
+server/presets/Treasure/__pycache__/check.cpython-38.pyc
+server/presets/Treasure/__pycache__/test_cases.cpython-38.pyc
