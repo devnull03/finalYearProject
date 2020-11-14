@@ -1,12 +1,14 @@
 import json
 import socket
 import sys, os, time
+import winshell
 from PyQt5 import QtWidgets
 import threading
 if '\\client' not in (cwd:=os.getcwd()):
     os.chdir(f"{cwd}\\client")
 from login import Login
 from mainPage import MainPage
+from endScreen import EndScreen
 import settings
 
 class Client:
@@ -75,13 +77,9 @@ class Client:
 
     def get_info(self):
         self.info = json.loads(self.send(self.LOGIN_MESSAGE))
-        user = os.path.abspath('client.py').split('\\')[2]
-        file_path = f"C:\\Users\\{user}"
         example_file = self.send('example_file').split(self.SEPARATOR)
-        if "Desktop" not in os.listdir(file_path):
-            file_path = f"{file_path}\\Onedrive\\Desktop\\{example_file[0]}"
-        else:
-            file_path = f"{file_path}\\Desktop\\{example_file[0]}"
+
+        file_path = f"{winshell.desktop()}\\{example_file[0]}"
         with open(file_path, 'w') as file:
             file.write(example_file[1])
 
@@ -118,6 +116,9 @@ class Client:
         if not self.app.exec_():
             self.send(self.DISCONNECT_MESSAGE)
             sys.exit()
+    
+    def show_EndScreen(self):
+        pass
 
 if __name__ == "__main__":
     Client()
