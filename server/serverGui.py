@@ -115,7 +115,7 @@ class ServerGui(object):
         self.playres.setText(self.participant_list)
  
     def showTime(self): 
-        if not self.started:
+        if not self.started and self.start:
             self.countdown -= 1
             if self.countdown == 0:
                 self.started = True

@@ -4,6 +4,7 @@ from pathlib import Path
 
 class MainPage(object):
     def __init__(self, **kwargs):
+        self.app = kwargs["app"]
         self.DISCONNECT_MESSAGE = kwargs["DISCONNECT_MESSAGE"]
         self.SEPARATOR = kwargs["SEPARATOR"]
         self.LOGIN_MESSAGE = kwargs["LOGIN_MESSAGE"]
@@ -199,7 +200,7 @@ class MainPage(object):
         self.file.setText(fname[0])
   
     def showTime(self): 
-        if not self.started:
+        if not self.started and self.start:
             self.countdown -= 1
             if self.countdown == 0:
                 self.started = True
@@ -225,6 +226,7 @@ class MainPage(object):
         if self.start and not self.sent and self.started:
             self.send_file(self.file.text())
             self.sent = True
+            self.app.quit()
 
 
 if __name__ == "__main__":

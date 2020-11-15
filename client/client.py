@@ -98,8 +98,12 @@ class Client:
                         self.show_info()
                         self.main_page.count = int(fetched[3])
                     self.main_page.start_timer()
-                self.main_page.participants = json.loads(fetched[2])
-                self.main_page.update_board()
+                if not self.main_page.sent:
+                    self.main_page.participants = json.loads(fetched[2])
+                    self.main_page.update_board()
+                else:
+                    self.end_screen.participants = json.loads(fetched[2])
+                    self.end_screen.update_board()
 
     def start_mainPage(self):
         MainPageWindow = QtWidgets.QMainWindow()
@@ -114,12 +118,28 @@ class Client:
         time_thread.start()
 
         if not self.app.exec_():
+            self.app.closeAllWindows()
+
+        if not self.main_page.sent:
             self.send(self.DISCONNECT_MESSAGE)
             sys.exit()
+        else:
+            self.show_EndScreen()
     
     def show_EndScreen(self):
-        pass
+        EndScreenWindow = QtWidgets.QMainWindow()
+        info = {
+            "mode": self.main_page.mode,
+            "participants": self.main_page.participants,
+            'username': self.username
+        }
+        self.end_screen = EndScreen(**info)
+        self.end_screen.setupUi(EndScreenWindow)
+        EndScreenWindow.show()
+
+        if not self.app.exec_():
+            self.send(self.DISCONNECT_MESSAGE)
+            sys.exit()
 
 if __name__ == "__main__":
     Client()
- 

@@ -86,7 +86,7 @@ class EndScreen(object):
 
     def retranslateUi(self, MainWindow):
         self._translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(self._translate("MainWindow", "Clash of Code | Admin"))
+        MainWindow.setWindowTitle(self._translate("MainWindow", "Clash of Code | Finish"))
         self.mode_label.setText(self._translate("MainWindow", f"Mode : {self.mode.title()}"))
         self.player_label.setText(self._translate("MainWindow", "Players"))
         self.update_board()
