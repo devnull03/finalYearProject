@@ -21,10 +21,12 @@ def set_server(addr, port):
 
 info = {'server': "Clash of Code - Server", 'client': "Clash of Code"}
 for i in info:
-    target = f"{os.getcwd()}\\{i}\\{i}.py"
+    target = f"{os.getcwd()}\\{i}\\{i}.exe"
     wDir = f"{os.getcwd()}\\{i}"
     icon = f"{os.getcwd()}\\{i}\\assets\\logo.ico"
+    print(f"[{i}] [BUILDING SHORTCUT] {target}")
     mkshortcut(target, wDir, icon, info[i])
+    print(f"[{i}] Completed")
 
 default = '''
 # 
