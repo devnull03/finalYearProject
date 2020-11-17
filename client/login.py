@@ -136,7 +136,7 @@ if __name__ == "__main__":
     ui = Login(**d)
     ui.setupUi(MainWindow)
     MainWindow.show()
-    ui.set_alert("Test")
+    # ui.set_alert("Test")
     print('-------------test-------------')
     if not app.exec_():
         app.quit()
