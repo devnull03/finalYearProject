@@ -263,7 +263,8 @@ if __name__ == "__main__":
         "SEPARATOR": '<SEP>',
         "LOGIN_MESSAGE": 'sendInfo',
         "send-func": test,
-        "file-func": test
+        "file-func": test,
+        "app": app
     }
     participants = [
             "admin",
