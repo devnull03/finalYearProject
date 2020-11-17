@@ -1,6 +1,5 @@
 
-card_task = '''
-You just bought a public transit card that allows you to ride the Metro for a certain number of days.
+card_task = '''You just bought a public transit card that allows you to ride the Metro for a certain number of days.
 
 Here is how it works: upon first receiving the card, the system allocates you a 31-day pass, which equals the number of days in January. The second time you pay for the card, your pass is extended by 28 days, i.e. the number of days in February (note that leap years are not considered), and so on. The 13th time you extend the pass, you get 31 days again.
 
@@ -10,8 +9,7 @@ Task
 Figure out the number of days by which your pass will now be extended, and return all the options as an array sorted in increasing order.
 '''
 
-treasure_task = '''
-It's a lovely day, you're once again visiting the Tech With Tim Building. Suddenly, as you walk down the stairs, you find a special treasure chest! There are two items in it!
+treasure_task = '''It's a lovely day, you're once again visiting the Tech With Tim Building. Suddenly, as you walk down the stairs, you find a special treasure chest! There are two items in it!
 
 Task
 The first item weighs weight1 and is worth value1, and the second item weighs weight2 and is worth value2. What is the total maximum value of the items you can take with you, assuming that your max weight capacity is maxW and you can't come back for the items later?
