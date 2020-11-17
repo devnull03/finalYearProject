@@ -1,5 +1,4 @@
 import sqlite3
-from sqlite3 import Error
 
 
 def checkUser(info, connection='assets/users.sqlite'):
@@ -19,13 +18,13 @@ def checkUser(info, connection='assets/users.sqlite'):
                 ''')
             conn.commit()
             returned = cur.fetchall()
-        except Error as i:
+        except Exception as i:
             print(i)
 
     return f"{bool(len(returned))}<SEP>{(password,) in returned}"
 
 
-def newUser(connection, userName, password):
+def newUser(userName, password, connection='assets/users.sqlite'):
     with sqlite3.connect(connection) as conn:
         cur = conn.cursor()
         try:
@@ -42,14 +41,21 @@ def newUser(connection, userName, password):
                 ''')
             conn.commit()
             return True
-        except Error as i:
+        except Exception as i:
             print(i)
             return False
 
 
 if __name__ == "__main__":
-
-    # print(
-    #     checkUser('devNull<SEP>123456')
-    # )
-    newUser('users.sqlite', 'admin', 'admin')
+    import sys
+    if len(sys.argv) > 1:
+        if sys.argv[1].lower() == "newuser":
+            if len(sys.argv) == 4:
+                newUser(sys.argv[2], sys.argv[3])
+                print(f"Added new user {sys.argv[2]}")
+            else:
+                print("Username and/or password is/are not specified")
+        else:
+            print("Invalid argument")
+    else:
+        print("No argument specifild")
