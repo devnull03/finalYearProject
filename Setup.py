@@ -21,7 +21,7 @@ def set_server(addr, port):
 
 info = {'server': "Clash of Code - Server", 'client': "Clash of Code"}
 for i in info:
-    target = f"{os.getcwd()}\\{i}\\{i}.exe"
+    target = f"{os.getcwd()}\\{i}\\{i}.py"
     wDir = f"{os.getcwd()}\\{i}"
     icon = f"{os.getcwd()}\\{i}\\assets\\logo.ico"
     print(f"[{i}] [BUILDING SHORTCUT] {target}")
