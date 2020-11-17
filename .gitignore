@@ -1,10 +1,11 @@
 /.vscode/
 /.idea/
-/server/solutions/
+/server/solutions/*
 /client/pyqt5-stuff/
 /client/pyqt5_stuff/
 /final/
 /build/
+*/__pycache__/
 
 testing.py
 test.py
