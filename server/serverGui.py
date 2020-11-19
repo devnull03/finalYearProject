@@ -103,7 +103,7 @@ class ServerGui(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Clash of Code | Admin"))
         self.Timer.setText(_translate("MainWindow", f"{self.time}:00"))
-        self.mode_label.setText(_translate("MainWindow", f"Mode : {self.mode}"))
+        self.mode_label.setText(_translate("MainWindow", f"Mode : {self.mode.title()}"))
         self.player_label.setText(_translate("MainWindow", "Players"))
         self.start_timer_button.setText(_translate("MainWindow", "Start"))
         self.update_board()
