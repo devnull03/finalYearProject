@@ -172,7 +172,7 @@ class MainPage(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "Clash of Code | Main"))
         self.Timer.setText(_translate("MainWindow", f"{self.time}:00"))
         self.task_desc.setText(_translate("MainWindow", self.task))
-        self.Mode.setText(_translate("MainWindow", f"Mode : {self.mode}"))
+        self.Mode.setText(_translate("MainWindow", f"Mode : {self.mode.title()}"))
         self.Task.setText(_translate("MainWindow", "Task"))
         self.Examples.setText(_translate("MainWindow", "Examples"))
         self.examples_list = "\n".join(f"solution({i})-> {self.ex[i]}" for i in self.ex)

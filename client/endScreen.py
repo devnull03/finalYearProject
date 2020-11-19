@@ -4,7 +4,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class EndScreen(object):
     def __init__(self, **kwargs):
         self.participants = kwargs["participants"]
-        self.mode = kwargs["mode"]
+        self.mode = kwargs["mode"].title()
         self.username = kwargs['username']
 
     def setupUi(self, MainWindow):
@@ -100,6 +100,7 @@ class EndScreen(object):
         self.Timer.setText(self._translate("MainWindow", f"Rank: {self.rank}"))
 
 if __name__ == "__main__":
+
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
