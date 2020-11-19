@@ -17,8 +17,10 @@ import os
 #     ( Should be named check.py )
 #
 # TEST_CASES :
-#      Path to the file that contains all the testcases
-#     ( Should be named test_cases.py )
+#      Path to the file that contains all the testcases.
+#      If the input is input is in the form of a list/tuple/dictionary, 
+#      enclose it inside a list or a tuple
+#      ( Should be named test_cases.py )
 # 
 
 presets_folder = os.getcwd() + "\\presets" # do not change
@@ -61,7 +63,7 @@ TEST_CASES = f"{folder}\\test_cases.py"
 #
 # Challenge Info ----------------------------------
 
-MODE = "Shortest" # the spelling should be correct, case doesnt matter
+MODE = "fastest" # "Shortest" # the spelling should be correct, case doesnt matter
 TIME = 10
 
 # Use similar format for writing the task
