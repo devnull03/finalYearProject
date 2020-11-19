@@ -1,4 +1,4 @@
-import os, sys
+import os
 # cwd = os.getcwd()
 # if not cwd.endswith('\\server'):
 #     os.chdir(f"{cwd}\\server")
@@ -14,6 +14,7 @@ import os, sys
 # TEST_CASES :
 #      Path to the file that contains all the testcases
 # 
+
 presets_folder = os.getcwd() + "\\presets"
 presets = {
     'CardTiming': f"{presets_folder}\\CardTiming",

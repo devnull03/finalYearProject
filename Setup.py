@@ -19,14 +19,25 @@ def set_server(addr, port):
     with open("client/settings.py", "w") as settings_file:
         settings_file.write(f"import socket\n\nSERVER = \"{addr}\" \nPORT = {port} \n"+comment)
 
+cwd = os.getcwd()
+
 info = {'server': "Clash of Code - Server", 'client': "Clash of Code"}
 for i in info:
-    target = f"{os.getcwd()}\\{i}\\{i}.py"
-    wDir = f"{os.getcwd()}\\{i}"
-    icon = f"{os.getcwd()}\\{i}\\assets\\logo.ico"
+    target = f"{cwd}\\{i}\\{i}.py"
+    wDir = f"{cwd}\\{i}"
+    icon = f"{cwd}\\{i}\\assets\\logo.ico"
     print(f"[{i}] [BUILDING SHORTCUT] {target}")
     mkshortcut(target, wDir, icon, info[i])
     print(f"[{i}] Completed")
+    
+print(f"[server] [BUILDING SHORTCUT] {cwd}\\server\\settings.py")
+mkshortcut(
+    f"{cwd}\\server\\settings.py",
+    f"{cwd}\\server",
+    f"{cwd}\\server\\assets\\logo.ico",
+    "Server settings"
+)
+print(f"[server] Completed")
 
 comment = '''
 # 
