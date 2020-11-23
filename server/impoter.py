@@ -13,6 +13,8 @@ class Checker:
 		sys.path.append(self.test_cases_path)
 		self.test_cases = __import__(testcases_file_path.split('\\')[-1].split('.')[0]).cases
 		sys.path.append(solutions_path)
+		if 'solutions' not in os.listdir():
+			os.mkdir('solutions')
 		
 	def clean_folder(self):
 		files = os.listdir(self.solutions_path)
