@@ -197,7 +197,8 @@ class MainPage(object):
     def showDialog(self, MainWindow):
         home_dir = str(Path.home())
         fname = QtWidgets.QFileDialog.getOpenFileName(MainWindow, 'Open file', home_dir, "python files (*.py)")
-        self.file.setText(fname[0])
+        if self.file.text() == '':
+            self.file.setText(fname[0])
   
     def showTime(self): 
         if not self.started and self.start and self.count == self.time*60:
@@ -223,8 +224,12 @@ class MainPage(object):
             self.start = False
 
     def file_func(self):
-        if self.start and not self.sent and self.started:
-            self.send_file(self.file.text())
+        if self.start and (not self.sent) and self.started:
+            file = self.file.text()
+            if file == '':
+                self.select_button.click()
+                return
+            self.send_file(file)
             self.sent = True
             self.app.quit()
 
