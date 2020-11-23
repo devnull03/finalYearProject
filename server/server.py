@@ -79,6 +79,9 @@ class Server:
                 msg = conn.recv(msg_length).decode(FORMAT)
                 info = msg.split(SEPARATOR)
 
+                if info[0] not in ('start?','file','fetch'):
+                    print(f"[{addr}] {msg}")
+
                 if info[0] == 'login':
                     user = checkUser(SEPARATOR.join((info[1], info[2])))
                     if user == f'True{SEPARATOR}True':
@@ -89,24 +92,30 @@ class Server:
                             self.participants.update({USER: {"time": None, "%": None, "len": None, "logged": True}})
                             self.ui.participants = self.participants
                             self.ui.update_board()
+                            continue
                         elif self.participants[info[1]]["logged"] == False:
                             conn.send(user.encode(FORMAT))
                             USER = info[1]
                             self.participants[info[1]]["logged"] = True
                             self.ui.participants = self.participants
                             self.ui.update_board()
+                            continue
                         else:
                             conn.send(f'No{SEPARATOR}No'.encode(FORMAT))
+                            continue
                     else:
                         conn.send(user.encode(FORMAT))
+                        continue
                 
                 elif info[0] == "fetch":
                     conn.send(
                         SEPARATOR.join(('fetch',str(self.ui.start),json.dumps(self.participants),str(self.ui.count))).encode(FORMAT)
                     )
+                    continue
 
                 elif info[0] == self.LOGIN_MESSAGE:
                     conn.send(json.dumps(self.challenge).encode(FORMAT))
+                    continue
 
                 elif info[0] == 'file':
                     with open(f"solutions\\{info[1]}", 'w') as file:
@@ -115,24 +124,23 @@ class Server:
                     t = settings.TIME * 60 - self.ui.count
                     self.participants[USER]["time"] = f"{t // 60}:{'0' * ((s := t % 60) < 10) + str(s)}"
                     self.check_files()
+                    continue
 
                 elif info[0] == 'example_file':
                     with open(settings.EXAMPLE_FILE, 'r') as file:
                         conn.send(f"challange.py{SEPARATOR}{file.read()}".encode(FORMAT))
-                else:
-                    conn.send("None".encode(FORMAT))
+                        continue
 
                 if msg == self.DISCONNECT_MESSAGE:
                     if self.participants[USER]["time"] is None:
                         self.participants.pop(USER)
                         self.ui.participants = self.participants
                         self.ui.update_board()
-
                     else:
                         self.participants[USER]["logged"] = False
                     connected = False
-                if info[0] not in ('start?','file','fetch'):
-                    print(f"[{addr}] {msg}")
+                else:
+                    conn.send("None".encode(FORMAT))
         conn.close()
 
     def start_server(self):
