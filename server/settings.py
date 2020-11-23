@@ -31,7 +31,7 @@ presets = {         # Format for adding new presets:-
 PRESET = 'Treasure' # Choose from the presets dictionary
 
 # Server files ------------------------------------
-folder = "" # Change folder location to the one containing your files
+folder = os.getcwd().rstrip("\\server") + "\\test_files" # Change folder location to the one containing your files
 
 if PRESET:
     folder = presets[PRESET]
