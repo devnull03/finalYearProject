@@ -10,6 +10,7 @@ D:\Coc> pip install -r requirements.txt
 ```
 
 After installing the dependencies, run the `Setup.py` file to get the shortcuts to `ClashOfCode\client\client.py`, `ClashOfCode\server\server.py` and `ClashOfCode\server\settings.py` on your desktop and you can re-run that file for setting the ip of the server when running the client or you can do the same thing by going in `ClashOfCode\client\settings.py` and changing it there directly\
+
 ![Shortcuts](README_images/shortcuts.png)
 
 After installing the dependencies, change the directory from `ClashOfCode` to `ClashOfCode\server` (as shown below) and you can make a new account using the command shown below (replace `username` and `password` with the username and password for the account respectively)
