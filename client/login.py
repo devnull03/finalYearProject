@@ -103,10 +103,13 @@ class Login(object):
             red:="rgb(250, 0, 0)",
             green:="rgb(0, 200, 0)"
             )
+        self.set_alert('')
         user_color = colors[user_check[0] == "True"]
         pass_color = colors[user_check[1] == "True"]
         self.userColor.setStyleSheet(f"background-color: {user_color};")
         self.passColor.setStyleSheet(f"background-color: {pass_color};")
+        if user_check[0] == 'No':
+            self.set_alert('Account already in use')
         if (green, green) == (pass_color, user_color):
             self.result = (True, user[0])
             self.app.quit()

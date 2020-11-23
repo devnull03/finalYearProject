@@ -28,13 +28,20 @@ class Client:
         self.available = True
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.app = QtWidgets.QApplication(sys.argv)
+        self.start_login()
+    
+    def connect(self):
+        self.login_page.set_alert('Looking for server')
         while 1:
             try:
                 self.client.connect(self.ADDR)
-                break
+                self.login_page.set_alert('Server Found')
+                print('Server Found')
+                time.sleep(1)
+                self.login_page.set_alert('')
+                return
             except ConnectionRefusedError:
                 print('Looking for servers')
-        self.start_login()
 
     def send(self, msg):
         message = str(msg).encode(self.FORMAT)
@@ -55,6 +62,7 @@ class Client:
             self.send(f'file{self.SEPARATOR}{self.username}.py{self.SEPARATOR}{file.read()}')
 
     def start_login(self):
+
         LoginWindow = QtWidgets.QMainWindow()
         self.app_info = {
                 "app": self.app,
@@ -64,13 +72,18 @@ class Client:
                 "send-func": self.send,
                 "file-func": self.send_file
             }
-        login_page = Login(**self.app_info)
-        login_page.setupUi(LoginWindow)
+        self.login_page = Login(**self.app_info)
+        self.login_page.setupUi(LoginWindow)
         LoginWindow.show()
+
+        connect_thread = threading.Thread(target=self.connect)
+        connect_thread.daemon = True
+        connect_thread.start()
+        
         if not self.app.exec_():
             self.app.closeAllWindows()
 
-        sucessful, self.username = login_page.result
+        sucessful, self.username = self.login_page.result
 
         if not sucessful:
             self.send(self.DISCONNECT_MESSAGE)
