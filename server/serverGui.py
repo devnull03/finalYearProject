@@ -11,7 +11,6 @@ class ServerGui(object):
         self.countdown = 6
         self.started = False
 
-
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(723, 448)
@@ -132,10 +131,11 @@ class ServerGui(object):
             seconds = "0"*((s:=self.count%60)<10) + str(s)
             self.Timer.setText(f"{minuts}:{seconds}")
 
-    def start_timer(self): 
-        self.start = True
-        if self.count == 0: 
-            self.start = False
+    def start_timer(self):
+        if len(self.participants):
+            self.start = True
+            if self.count == 0: 
+                self.start = False
 
 
 if __name__ == "__main__":
