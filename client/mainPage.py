@@ -200,7 +200,7 @@ class MainPage(object):
         self.file.setText(fname[0])
   
     def showTime(self): 
-        if not self.started and self.start:
+        if not self.started and self.start and self.count == self.time*60:
             self.countdown -= 1
             if self.countdown == 0:
                 self.started = True

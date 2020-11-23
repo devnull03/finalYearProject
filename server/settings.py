@@ -4,9 +4,8 @@ import os
 # if not cwd.endswith('\\server'):
 #     os.chdir(f"{cwd}\\server")
 # ---------------------------------------
-
 # 
-# # EXAMPLE_FILE : 
+# EXAMPLE_FILE : 
 #     Path to the file that will be 
 #     sent to the players as a reference program
 #     ( Should be named example.py )
@@ -32,8 +31,7 @@ presets = {         # Format for adding new presets:-
 PRESET = 'Treasure' # Choose from the presets dictionary
 
 # Server files ------------------------------------
-folder = os.getcwd().rstrip('\\server') + "\\test_files" # Change folder location to the one 
-                                                         # containing your files
+folder = "" # Change folder location to the one containing your files
 
 if PRESET:
     folder = presets[PRESET]
@@ -63,14 +61,16 @@ TEST_CASES = f"{folder}\\test_cases.py"
 #
 # Challenge Info ----------------------------------
 
-MODE = "fastest" # "Shortest" # the spelling should be correct, case doesnt matter
+# the spelling should be correct, case doesnt matter
+MODE = "fastest" # "Shortest" / "Fastest"
 TIME = 10
 
 # Use similar format for writing the task
 TASK = """test task
 """*10
 
-# If input is a list or tuple or dictionry, make it a string
+# If input is a list or tuple or dictionry or 
+# in case of multiple inouts, make it a string
 EXAMPLES = {    
     1: 1,
     2: 4,

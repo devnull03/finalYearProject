@@ -5,7 +5,11 @@ import winshell
 from PyQt5 import QtWidgets
 import threading
 if '\\client' not in (cwd:=os.getcwd()):
-    os.chdir(f"{cwd}\\client")
+    try:
+        os.chdir(f"{cwd}\\client")
+    except Exception as e:
+        print(e)
+        print('-----------------')
 from login import Login
 from mainPage import MainPage
 from endScreen import EndScreen
@@ -89,14 +93,16 @@ class Client:
         self.main_page.update()
 
     def start_check(self):
+        shown = False
         while 1:
             time.sleep(0.2)
             if self.available:
                 fetched = self.send("fetch").split(self.SEPARATOR)
                 if fetched[1] == "True":
-                    if not self.main_page.start:
+                    if self.main_page.started and not shown :
                         self.show_info()
                         self.main_page.count = int(fetched[3])
+                        shown = True
                     self.main_page.start_timer()
                 if not self.main_page.sent:
                     self.main_page.participants = json.loads(fetched[2])
