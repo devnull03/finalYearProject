@@ -2,11 +2,11 @@
 
 Its a [Clash of code](https://www.codingame.com/multiplayer/clashofcode) inspired multiplayer competitive programing game that runs on a local network. It can be usefull in schools where it could be used as a test taking method.
 
-Before running anything, you need to first install all the dependencies stated in the `requirements.txt` file using the command below in terminal of your choice
+Before running anything, you need to first install all the dependencies stated in the `requirements.txt` file using the command below in terminal of your choice (Skip if you downloaded the compiled files or the release)
 
 ```powershell
 # in terminal
-D:\Coc> pip install -r requirements.txt
+D:\ClashOfCode> pip install -r requirements.txt
 ```
 
 After installing the dependencies, run the `Setup.py` file to get the shortcuts to `ClashOfCode\client\client.py`, `ClashOfCode\server\server.py` and `ClashOfCode\server\settings.py` on your desktop and you can re-run that file for setting the ip of the server when running the client or you can do the same thing by going in `ClashOfCode\client\settings.py` and changing it there directly
