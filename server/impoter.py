@@ -29,8 +29,8 @@ class Checker:
 		for file in files:
 			if '.py' not in file:
 				continue
-			module = __import__(file.split('.')[0])
 			try:
+				module = __import__(file.split('.')[0])
 				l = []
 				for case in self.test_cases:
 					if type(case) in (list, tuple):
