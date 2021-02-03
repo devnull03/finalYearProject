@@ -50,7 +50,8 @@ class Server:
     @staticmethod
     def rank(dictionary, mode):
         d = dictionary
-        func = lambda x: int((t:=d[x]["time"].split(":"))[0])*60 + int(t[1]) if d[x]["time"] else 10**10
+        t = d[x]["time"].split(":")
+        func = lambda x: int((t)[0])*60 + int(t[1]) if d[x]["time"] else 10**10
         l = [
             lambda: {i:d[i] for i in sorted(d,key=func)},
             lambda: {i:d[i] for i in sorted(d,key=lambda x:d[x]["len"]if d[x]["len"] else 10**10)}
@@ -122,7 +123,8 @@ class Server:
                         file.write(info[2])
                     conn.send('Done'.encode(FORMAT))
                     t = settings.TIME * 60 - self.ui.count
-                    self.participants[USER]["time"] = f"{t // 60}:{'0' * ((s := t % 60) < 10) + str(s)}"
+                    s = t % 60
+                    self.participants[USER]["time"] = f"{t // 60}:{'0' * ((s) < 10) + str(s)}"
                     self.check_files()
                     continue
 

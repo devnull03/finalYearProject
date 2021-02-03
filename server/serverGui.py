@@ -128,7 +128,8 @@ class ServerGui(object):
                 self.select_button.click()
         if self.start: 
             minuts = self.count//60
-            seconds = "0"*((s:=self.count%60)<10) + str(s)
+            s = self.count%60
+            seconds = "0"*((s)<10) + str(s)
             self.Timer.setText(f"{minuts}:{seconds}")
 
     def start_timer(self):

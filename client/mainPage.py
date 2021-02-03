@@ -215,7 +215,8 @@ class MainPage(object):
                 self.select_button.click()
         if self.start:
             minuts = self.count//60
-            seconds = "0"*((s:=self.count%60)<10) + str(s)
+            s = self.count%60
+            seconds = "0"*((s)<10) + str(s)
             self.Timer.setText(f"{minuts}:{seconds}")
 
     def start_timer(self): 
@@ -238,8 +239,8 @@ if __name__ == "__main__":
     import sys
     import random
     import os
-
-    if '\\client' not in (cwd := os.getcwd()):
+    cwd = os.getcwd()
+    if '\\client' not in (cwd):
         os.chdir(f"{cwd}\\client")
 
     app = QtWidgets.QApplication(sys.argv)

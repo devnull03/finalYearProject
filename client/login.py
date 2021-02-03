@@ -99,9 +99,10 @@ class Login(object):
     def chech_cred(self):
         user = (self.userName_box.text().strip(), self.passWord_box.text().strip())
         user_check = self.send(self.SEPARATOR.join(('login',*user))).split(self.SEPARATOR)
+        green = "rgb(0, 200, 0)"
         colors = (
-            red:="rgb(250, 0, 0)",
-            green:="rgb(0, 200, 0)"
+            "rgb(250, 0, 0)",
+            green
             )
         self.set_alert('')
         user_color = colors[user_check[0] == "True"]
@@ -120,7 +121,8 @@ class Login(object):
 
 if __name__ == "__main__":
     import sys, random, os
-    if '\\client' not in (cwd:=os.getcwd()):
+    cwd = os.getcwd()
+    if '\\client' not in (cwd):
         os.chdir(f"{cwd}\\client")
 
     def test(*args):

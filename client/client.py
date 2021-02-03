@@ -4,7 +4,8 @@ import sys, os, time
 import winshell
 from PyQt5 import QtWidgets
 import threading
-if '\\client' not in (cwd:=os.getcwd()):
+cwd = os.getcwd()
+if '\\client' not in (cwd):
     try:
         os.chdir(f"{cwd}\\client")
     except Exception as e:
