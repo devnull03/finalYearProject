@@ -2,7 +2,8 @@
 /.idea/
 /server/solutions/*
 /final/
-/build/
+*/build/
+
 */__pycache__/
 
 ClashofCode.zip
