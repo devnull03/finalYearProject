@@ -6,7 +6,10 @@
 */__pycache__/
 
 ClashofCode.zip
+/smallerFinalProject/
 
 *.exe
 *.pyc
 *.spec
+*.zip
+*.sqlite
